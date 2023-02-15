@@ -4,6 +4,8 @@ import InputBox from './InputBox';
 import { useLocation } from 'react-router-dom';
 import Dropdown from './Dropdown';
 import { Major, GraduationYear } from '../constants/dropdown';
+import CheckBoxInput from './CheckBoxInput';
+import Button from './Button';
 // import CheckBoxInput from './CheckBoxInput';
 // import { Dropdown } from '../components/Dropdown';
 const Form = () => {
@@ -17,7 +19,7 @@ const Form = () => {
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [degree, setDegree] = useState('');
-  const [major, setajor] = useState('');
+  const [major, setMajor] = useState('');
   const [graduationYear, setGraduationYear] = useState('');
   const [gba, setGba] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = useState('');
@@ -25,7 +27,7 @@ const Form = () => {
   const [totalExperience, setTotalExperience] = useState('');
   const [totalReleventExperience, setTotalReleventExperience] = useState('');
   const [currentCompany, setcurrentCompany] = useState('');
-  const [name, setName] = useState('');
+  const [currentJobTitle, setCurrentJobTitle] = useState('');
   const location = useLocation();
   const { position } = location.state;
   const setValNationality = (val: string) => {
@@ -46,7 +48,13 @@ const Form = () => {
   const setValCountry = (country: string) => {
     setCountry(country);
   };
-  console.log(country);
+  const setValMajor = (major: string) => {
+    setMajor(major);
+  };
+  const setValGraduationYear = (year: string) => {
+    setGraduationYear(year);
+  };
+  // console.log(country);
 
   useEffect(() => {
     fetchCountry();
@@ -54,17 +62,19 @@ const Form = () => {
   }, []);
   return (
     <div className="h-screen">
-      <div className="text-salam-blue p-20 text-3xl font-bold">
-        <span>
+      <div className="text-salam-blue py-10 px-20 text-3xl font-bold">
+        <div>
           {'Apply for the position of: '}
           {position}
-        </span>
+        </div>
       </div>
       <div className="grid mx-10 md:grid-cols-3">
         <div />
         <div>
-          <span className="font-semibold text-lg">Personal Information</span>
-          {/* <CheckBoxInput title="Do you have any work experience?" /> */}
+          <div className="font-semibold text-lg mb-10">
+            Personal Information
+          </div>
+
           <InputBox
             placeholder={'First Name'}
             type={'text'}
@@ -95,14 +105,8 @@ const Form = () => {
           />
           <div className="h-[1px] bg-salam-blue my-14" />
 
-          <span className="font-semibold text-lg">Residence</span>
-          {/* <InputBox
-            placeholder={'Country of Residence '}
-            type={'text'}
-            handleChange={(e) => {
-              setCountry(e.target.value);
-            }}
-          /> */}
+          <div className="font-semibold text-lg mb-10">Residence</div>
+
           <Dropdown
             choices={allCountry.map(
               (country: { name: string; code: string }) => country.name
@@ -115,95 +119,96 @@ const Form = () => {
             placeholder={'City of Residence'}
             type={'text'}
             handleChange={(e) => {
-              setName(e.target.value);
+              setCity(e.target.value);
             }}
           />
-          {/* <InputBox
-            placeholder={'Nationality'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
-            }}
-          /> */}
+
           <Dropdown
             choices={allNationality}
             placeholder={'Nationality'}
             onClick={setValNationality}
             isMandatory={false}
           />
-          {/* <Dropdown /> */}
+
           <div className="h-[1px] bg-salam-blue my-14" />
 
-          <span className="font-semibold text-lg">Educational Information</span>
-          <InputBox
-            placeholder={'Educational Degree'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
+          <div className="font-semibold text-lg mb-10">
+            Educational Information
+          </div>
+
+          <CheckBoxInput
+            title="Educational Degree"
+            name="educational degree"
+            options={[
+              'Ph.D.',
+              `Master's degree`,
+              `Bachelor's degree`,
+              'Diploma',
+              'High school',
+              'below high school',
+            ]}
+            onClick={(e: any) => {
+              setDegree(e.target.value);
             }}
           />
-          {/* <InputBox
-            placeholder={'Major'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
-            }}
-          /> */}
+
           <Dropdown
             choices={Major}
             placeholder={'Major'}
-            onClick={setValNationality}
+            onClick={setValMajor}
             isMandatory={false}
           />
-          {/* <InputBox
-            placeholder={'Graduation year'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
-            }}
-          /> */}
+
           <Dropdown
             choices={GraduationYear}
             placeholder={'Graduation year'}
-            onClick={setValNationality}
+            onClick={setValGraduationYear}
             isMandatory={false}
           />
           <InputBox
+            max={100}
             placeholder={'GBA or %'}
             type={'number'}
             handleChange={(e) => {
-              setName(e.target.value);
+              setGba(e.target.value);
             }}
           />
           <div className="h-[1px] bg-salam-blue my-14" />
 
-          <span className="font-semibold text-lg">Professional Experience</span>
-          <InputBox
-            placeholder={'Do you have any work experience'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
+          <div className="font-semibold text-lg mb-10">
+            Professional Experience
+          </div>
+
+          <CheckBoxInput
+            name="work experience"
+            title="Do you have any work experience?"
+            options={['yes', 'no']}
+            onClick={(e: any) => {
+              setWorkExperience(e.target.value);
             }}
           />
-          <InputBox
-            placeholder={'Total years of experience?'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
+          <CheckBoxInput
+            name="total experience"
+            title="Total years of experience?"
+            options={['0-3', '3-5', '5-10', '10+']}
+            onClick={(e: any) => {
+              setTotalExperience(e.target.value);
             }}
           />
-          <InputBox
-            placeholder={'Total years of relevant experience?'}
-            type={'text'}
-            handleChange={(e) => {
-              setName(e.target.value);
+
+          <CheckBoxInput
+            name="total relevant experience"
+            title="Total years of relevant experience?"
+            options={['0-3', '3-5', '5-10', '10+']}
+            onClick={(e: any) => {
+              setTotalReleventExperience(e.target.value);
             }}
           />
           <InputBox
             placeholder={'Current Company?'}
             type={'text'}
             handleChange={(e) => {
-              setName(e.target.value);
+              setcurrentCompany(e.target.value);
             }}
           />
 
@@ -211,7 +216,7 @@ const Form = () => {
             placeholder={'Current job title?'}
             type={'text'}
             handleChange={(e) => {
-              setName(e.target.value);
+              setCurrentJobTitle(e.target.value);
             }}
           />
           <InputBox
@@ -219,8 +224,14 @@ const Form = () => {
             placeholder={'CV Upload as PDF.'}
             type={'file'}
             handleChange={(e) => {
-              setName(e.target.value);
+              console.log(e.target.value);
             }}
+          />
+          <Button
+            styles="w-full my-10"
+            buttonType="primary"
+            onClick={() => {}}
+            title={'Submit Form'}
           />
           <div className="h-[1px] bg-white my-28 md:my-14" />
         </div>

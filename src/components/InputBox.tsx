@@ -8,6 +8,7 @@ const InputBox = (props: {
   type: string;
   styles?: string;
   inputStyles?: string;
+  max?: number;
   handleChange?: (e: any) => void;
 }) => {
   const data = useContext(AppContext);
@@ -26,6 +27,7 @@ const InputBox = (props: {
           </label>
         )}
         <input
+          max={props.max}
           type={props.type}
           placeholder={props.placeholder}
           className={`w-full p-3 ${props.inputStyles} placeholder:align-text-top outline-none focus:outline-bright-green outline-offset-0 border-roman-silver border-[1px] rounded-lg`}
