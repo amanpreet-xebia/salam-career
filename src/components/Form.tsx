@@ -41,8 +41,13 @@ const Form = () => {
     const country = await fetch('http://localhost:1337/api/countries');
     const jsonCountry = await country.json();
     setAllCountry(jsonCountry.data[0].attributes.country);
-    console.log(jsonCountry);
+    // console.log(jsonCountry);
   };
+  const setValCountry = (country: string) => {
+    setCountry(country);
+  };
+  console.log(country);
+
   useEffect(() => {
     fetchCountry();
     fetchNationality();
@@ -99,9 +104,11 @@ const Form = () => {
             }}
           /> */}
           <Dropdown
-            choices={allCountry}
+            choices={allCountry.map(
+              (country: { name: string; code: string }) => country.name
+            )}
             placeholder={'Country of Residence'}
-            onClick={setValNationality}
+            onClick={setValCountry}
             isMandatory={false}
           />
           <InputBox
