@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import AppContext from '../AppContext';
 import InputBox from './InputBox';
 import { useLocation } from 'react-router-dom';
 import Dropdown from './Dropdown';
-import { Nationality } from '../constants/dropdown';
+import { Major, GraduationYear } from '../constants/dropdown';
+// import CheckBoxInput from './CheckBoxInput';
 // import { Dropdown } from '../components/Dropdown';
 const Form = () => {
+  const [allNationality, setAllNationality] = useState([]);
+  const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [nationality, setNationality] = useState('');
@@ -28,6 +31,22 @@ const Form = () => {
   const setValNationality = (val: string) => {
     setNationality(val);
   };
+  const fetchNationality = async () => {
+    const nationality = await fetch('http://localhost:1337/api/nationalities');
+    const jsonNationality = await nationality.json();
+    setAllNationality(jsonNationality.data[0].attributes.nationality);
+    // console.log(jsonNationality);
+  };
+  const fetchCountry = async () => {
+    const country = await fetch('http://localhost:1337/api/countries');
+    const jsonCountry = await country.json();
+    setAllCountry(jsonCountry.data[0].attributes.country);
+    console.log(jsonCountry);
+  };
+  useEffect(() => {
+    fetchCountry();
+    fetchNationality();
+  }, []);
   return (
     <div className="h-screen">
       <div className="text-salam-blue p-20 text-3xl font-bold">
@@ -36,10 +55,11 @@ const Form = () => {
           {position}
         </span>
       </div>
-      <div className="grid grid-cols-3">
+      <div className="grid mx-10 md:grid-cols-3">
         <div />
         <div>
           <span className="font-semibold text-lg">Personal Information</span>
+          {/* <CheckBoxInput title="Do you have any work experience?" /> */}
           <InputBox
             placeholder={'First Name'}
             type={'text'}
@@ -56,14 +76,14 @@ const Form = () => {
           />
           <InputBox
             placeholder={'Email'}
-            type={'text'}
+            type={'email'}
             handleChange={(e) => {
               setEmail(e.target.value);
             }}
           />
           <InputBox
             placeholder={'Phone'}
-            type={'text'}
+            type={'number'}
             handleChange={(e) => {
               setPhoneNumber(e.target.value);
             }}
@@ -71,12 +91,18 @@ const Form = () => {
           <div className="h-[1px] bg-salam-blue my-14" />
 
           <span className="font-semibold text-lg">Residence</span>
-          <InputBox
+          {/* <InputBox
             placeholder={'Country of Residence '}
             type={'text'}
             handleChange={(e) => {
               setCountry(e.target.value);
             }}
+          /> */}
+          <Dropdown
+            choices={allCountry}
+            placeholder={'Country of Residence'}
+            onClick={setValNationality}
+            isMandatory={false}
           />
           <InputBox
             placeholder={'City of Residence'}
@@ -93,7 +119,7 @@ const Form = () => {
             }}
           /> */}
           <Dropdown
-            choices={Nationality}
+            choices={allNationality}
             placeholder={'Nationality'}
             onClick={setValNationality}
             isMandatory={false}
@@ -109,23 +135,35 @@ const Form = () => {
               setName(e.target.value);
             }}
           />
-          <InputBox
+          {/* <InputBox
             placeholder={'Major'}
             type={'text'}
             handleChange={(e) => {
               setName(e.target.value);
             }}
+          /> */}
+          <Dropdown
+            choices={Major}
+            placeholder={'Major'}
+            onClick={setValNationality}
+            isMandatory={false}
           />
-          <InputBox
+          {/* <InputBox
             placeholder={'Graduation year'}
             type={'text'}
             handleChange={(e) => {
               setName(e.target.value);
             }}
+          /> */}
+          <Dropdown
+            choices={GraduationYear}
+            placeholder={'Graduation year'}
+            onClick={setValNationality}
+            isMandatory={false}
           />
           <InputBox
             placeholder={'GBA or %'}
-            type={'text'}
+            type={'number'}
             handleChange={(e) => {
               setName(e.target.value);
             }}
@@ -177,7 +215,7 @@ const Form = () => {
               setName(e.target.value);
             }}
           />
-          <div className="h-[1px] bg-salam-blue my-14" />
+          <div className="h-[1px] bg-white my-28 md:my-14" />
         </div>
         <div />
       </div>

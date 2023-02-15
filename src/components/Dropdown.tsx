@@ -35,7 +35,7 @@ const Dropdown = (props: dropdownProps) => {
       </div>
 
       {openDropdown && (
-        <div className="absolute cursor-pointer text-center rounded-md bg-white w-full top-12 -right-10 text-black font-light flex flex-col flex-grow z-10 m-auto mx-10 shadow-2xl">
+        <div className="absolute max-h-40 overflow-scroll cursor-pointer text-center rounded-md bg-white w-full top-12 -right-10 text-black font-light flex flex-col flex-grow z-10 m-auto mx-10 shadow-2xl">
           {props.choices.map((item: any, index: number) => (
             <span
               key={index}
