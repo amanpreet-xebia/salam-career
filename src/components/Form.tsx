@@ -28,8 +28,53 @@ const Form = () => {
   const [totalReleventExperience, setTotalReleventExperience] = useState('');
   const [currentCompany, setcurrentCompany] = useState('');
   const [currentJobTitle, setCurrentJobTitle] = useState('');
+  const [cv, setCv] = useState<any>();
   const location = useLocation();
   const { position } = location.state;
+  const submitForm = async () => {
+    const formDetails = {
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phoneNumber,
+      country: country,
+      city: city,
+      nationality: nationality,
+      degree: degree,
+      major: major,
+      graduationYear: graduationYear,
+      GBA: gba,
+      professionalCertificate: professionalCertificate,
+      workExperience: workExperience === 'yes' ? true : false,
+      totalYearsOfExperience: totalExperience,
+      totalYearsOfRelevantExperience: totalReleventExperience,
+      currentCompany: currentCompany,
+      currentJobTitle: currentJobTitle,
+      CV: cv,
+    };
+    const obj = { data: formDetails };
+    // const objJson = JSON.stringify(obj);
+    const add = await fetch('http://localhost:1337/api/form-submissions', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(obj),
+    });
+    // axios
+    //   .post('http://localhost:1337/api/form-submissions', {
+    //     objJson,
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   });
+    // console.log(JSON.stringify(obj));
+
+    const addResponse = await add.json();
+    console.log(addResponse);
+    console.log(JSON.stringify(obj));
+  };
   const setValNationality = (val: string) => {
     setNationality(val);
   };
@@ -205,6 +250,13 @@ const Form = () => {
             }}
           />
           <InputBox
+            placeholder={'Professional Certificate'}
+            type={'text'}
+            handleChange={(e) => {
+              setProfessionalCertificate(e.target.value);
+            }}
+          />
+          <InputBox
             placeholder={'Current Company?'}
             type={'text'}
             handleChange={(e) => {
@@ -224,13 +276,15 @@ const Form = () => {
             placeholder={'CV Upload as PDF.'}
             type={'file'}
             handleChange={(e) => {
-              console.log(e.target.value);
+              setCv(e.target.value);
             }}
           />
           <Button
             styles="w-full my-10"
             buttonType="primary"
-            onClick={() => {}}
+            onClick={() => {
+              submitForm();
+            }}
             title={'Submit Form'}
           />
           <div className="h-[1px] bg-white my-28 md:my-14" />
