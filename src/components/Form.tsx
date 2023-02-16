@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-// import AppContext from '../AppContext';
 import InputBox from './InputBox';
 import { useLocation } from 'react-router-dom';
 import Dropdown from './Dropdown';
-import { Major, GraduationYear } from '../constants/dropdown';
 import CheckBoxInput from './CheckBoxInput';
 import Button from './Button';
-// import CheckBoxInput from './CheckBoxInput';
-// import { Dropdown } from '../components/Dropdown';
 const Form = () => {
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
@@ -29,8 +25,18 @@ const Form = () => {
   const [currentCompany, setcurrentCompany] = useState('');
   const [currentJobTitle, setCurrentJobTitle] = useState('');
   const [cv, setCv] = useState<any>();
+  const [linkedInUrl, setLinkedInUrl] = useState('');
   const location = useLocation();
   const { position } = location.state;
+  // const d = new Date();
+  // const l = d.getFullYear();
+  const currentYear = new Date().getFullYear();
+  const range = (start: number, stop: number, step: number) =>
+    Array.from(
+      { length: (stop - start) / step + 1 },
+      (_, i) => start + i * step
+    );
+  const allYears = range(currentYear, currentYear - 30, -1);
   const submitForm = async () => {
     const formDetails = {
       firstName: firstName,
@@ -50,10 +56,10 @@ const Form = () => {
       totalYearsOfRelevantExperience: totalReleventExperience,
       currentCompany: currentCompany,
       currentJobTitle: currentJobTitle,
+      linkedInUrl: linkedInUrl,
       CV: cv,
     };
     const obj = { data: formDetails };
-    // const objJson = JSON.stringify(obj);
     const add = await fetch('http://localhost:1337/api/form-submissions', {
       method: 'POST',
       mode: 'cors',
@@ -62,14 +68,6 @@ const Form = () => {
       },
       body: JSON.stringify(obj),
     });
-    // axios
-    //   .post('http://localhost:1337/api/form-submissions', {
-    //     objJson,
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //   });
-    // console.log(JSON.stringify(obj));
 
     const addResponse = await add.json();
     console.log(addResponse);
@@ -78,28 +76,24 @@ const Form = () => {
   const setValNationality = (val: string) => {
     setNationality(val);
   };
+
   const fetchNationality = async () => {
     const nationality = await fetch('http://localhost:1337/api/nationalities');
     const jsonNationality = await nationality.json();
     setAllNationality(jsonNationality.data[0].attributes.nationality);
-    // console.log(jsonNationality);
   };
   const fetchCountry = async () => {
     const country = await fetch('http://localhost:1337/api/countries');
     const jsonCountry = await country.json();
     setAllCountry(jsonCountry.data[0].attributes.country);
-    // console.log(jsonCountry);
   };
   const setValCountry = (country: string) => {
     setCountry(country);
   };
-  const setValMajor = (major: string) => {
-    setMajor(major);
-  };
+
   const setValGraduationYear = (year: string) => {
     setGraduationYear(year);
   };
-  // console.log(country);
 
   useEffect(() => {
     fetchCountry();
@@ -197,15 +191,15 @@ const Form = () => {
             }}
           />
 
-          <Dropdown
-            choices={Major}
+          <InputBox
             placeholder={'Major'}
-            onClick={setValMajor}
-            isMandatory={false}
+            type={'text'}
+            handleChange={(e) => {
+              setMajor(e.target.value);
+            }}
           />
-
           <Dropdown
-            choices={GraduationYear}
+            choices={allYears}
             placeholder={'Graduation year'}
             onClick={setValGraduationYear}
             isMandatory={false}
@@ -216,6 +210,13 @@ const Form = () => {
             type={'number'}
             handleChange={(e) => {
               setGba(e.target.value);
+            }}
+          />
+          <InputBox
+            placeholder={'Professional Certificate'}
+            type={'text'}
+            handleChange={(e) => {
+              setProfessionalCertificate(e.target.value);
             }}
           />
           <div className="h-[1px] bg-salam-blue my-14" />
@@ -232,43 +233,51 @@ const Form = () => {
               setWorkExperience(e.target.value);
             }}
           />
-          <CheckBoxInput
-            name="total experience"
-            title="Total years of experience?"
-            options={['0-3', '3-5', '5-10', '10+']}
-            onClick={(e: any) => {
-              setTotalExperience(e.target.value);
-            }}
-          />
+          {workExperience === 'yes' && (
+            <>
+              <CheckBoxInput
+                name="total experience"
+                title="Total years of experience?"
+                options={['0-3', '3-5', '5-10', '10+']}
+                onClick={(e: any) => {
+                  setTotalExperience(e.target.value);
+                }}
+              />
 
-          <CheckBoxInput
-            name="total relevant experience"
-            title="Total years of relevant experience?"
-            options={['0-3', '3-5', '5-10', '10+']}
-            onClick={(e: any) => {
-              setTotalReleventExperience(e.target.value);
-            }}
-          />
-          <InputBox
-            placeholder={'Professional Certificate'}
-            type={'text'}
-            handleChange={(e) => {
-              setProfessionalCertificate(e.target.value);
-            }}
-          />
-          <InputBox
-            placeholder={'Current Company?'}
-            type={'text'}
-            handleChange={(e) => {
-              setcurrentCompany(e.target.value);
-            }}
-          />
+              <CheckBoxInput
+                name="total relevant experience"
+                title="Total years of relevant experience?"
+                options={['0-3', '3-5', '5-10', '10+']}
+                onClick={(e: any) => {
+                  setTotalReleventExperience(e.target.value);
+                }}
+              />
 
+              <InputBox
+                placeholder={'Current Company?'}
+                type={'text'}
+                handleChange={(e) => {
+                  setcurrentCompany(e.target.value);
+                }}
+              />
+
+              <InputBox
+                placeholder={'Current job title?'}
+                type={'text'}
+                handleChange={(e) => {
+                  setCurrentJobTitle(e.target.value);
+                }}
+              />
+            </>
+          )}
+          <div className="h-[1px] bg-salam-blue my-14" />
+
+          <div className="font-semibold text-lg mb-10">{'Attachments'}</div>
           <InputBox
-            placeholder={'Current job title?'}
+            placeholder={'LinkedIn Profile URL'}
             type={'text'}
             handleChange={(e) => {
-              setCurrentJobTitle(e.target.value);
+              setLinkedInUrl(e.target.value);
             }}
           />
           <InputBox
@@ -276,7 +285,7 @@ const Form = () => {
             placeholder={'CV Upload as PDF.'}
             type={'file'}
             handleChange={(e) => {
-              setCv(e.target.value);
+              setCv(e.target.files);
             }}
           />
           <Button

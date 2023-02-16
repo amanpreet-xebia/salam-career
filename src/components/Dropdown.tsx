@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { downChevronBlack } from '../assets';
 interface dropdownProps {
-  choices: string[];
+  choices: (string | number)[];
   onClick: (val: string) => void;
   isMandatory: boolean;
   icon?: any;
