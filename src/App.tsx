@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import Form from './components/Form';
 import JobListing from './components/JobListing';
 import Navbar from './components/Navbar';
+import SuccessfulScreen from './components/SuccessfulScreen';
 import { translations } from './constants';
 function App() {
   const [locale, setLocale] = useState('en');
@@ -26,6 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element={<JobListing />} />
             <Route path="/form" element={<Form />} />
+            <Route path="/success" element={<SuccessfulScreen />} />
           </Routes>
           <Footer />
         </AppContext.Provider>

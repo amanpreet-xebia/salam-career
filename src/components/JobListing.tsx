@@ -18,7 +18,7 @@ const JobListing = () => {
       <div className="text-salam-blue p-20 text-3xl font-bold">
         <span>Job Listings</span>
       </div>
-      <div className="grid grid-cols-2 gap-16 mx-24">
+      <div className="md:grid md:grid-cols-2 gap-16 mx-24">
         {jobs.map((item: any) => (
           <div key={item.id} className={'m-2 cursor-pointer'}>
             <JobCard
@@ -30,7 +30,7 @@ const JobListing = () => {
           </div>
         ))}
       </div>
-      <div className="h-[1px] bg-white my-28 md:my-16" />
+      <div className="h-[1px] bg-white my-60 md:my-16" />
     </div>
   );
 };

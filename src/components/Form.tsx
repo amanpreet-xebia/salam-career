@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Dropdown from './Dropdown';
 import CheckBoxInput from './CheckBoxInput';
 import Button from './Button';
@@ -29,7 +29,7 @@ const Form = () => {
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const location = useLocation();
   const { position } = location.state;
-
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   let headers = {
     'Content-Type': 'application/json',
@@ -77,6 +77,7 @@ const Form = () => {
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
           .then((res: any) => {
             console.log(res.data);
+            navigate('/success');
           });
       });
   };

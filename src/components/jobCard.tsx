@@ -11,7 +11,7 @@ const jobCard = (props: {
     <Link
       to={'./form'}
       state={{ position: props.name }}
-      className="border-2 flex h-6 justify-center items-center text-center border-salam-blue flex-col p-3 rounded-md min-h-[200px]"
+      className="border-2 flex h-6 justify-center items-center text-center border-salam-blue flex-col my-10 md:m-0 p-3 rounded-md min-h-[200px]"
     >
       <div className="">
         <div>
