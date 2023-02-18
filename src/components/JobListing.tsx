@@ -1,14 +1,15 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import JobCard from './jobCard';
 
 const JobListing = () => {
   const [jobs, setJobs] = useState([]);
   const fetchJobs = async () => {
-    const jobs = await fetch('http://localhost:1337/api/salam-job-listings');
-    const jsonJobs = await jobs.json();
-    setJobs(jsonJobs.data);
-    console.log(jsonJobs);
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
+      .then((res) => setJobs(res.data.data));
   };
+
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -29,6 +30,7 @@ const JobListing = () => {
           </div>
         ))}
       </div>
+      <div className="h-[1px] bg-white my-28 md:my-16" />
     </div>
   );
 };

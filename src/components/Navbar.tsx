@@ -1,12 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Header from './Header';
 import Logo from '../assets/logo.svg';
 import DropDown from '../assets/dropDown.svg';
-import AppContext from '../AppContext';
 const Navbar = () => {
-  const value = useContext(AppContext);
-
-  //   const selectedLanguage = localStorage.getItem('selectedLanguage');
   return (
     <div>
       <Header />

@@ -11,7 +11,6 @@ const Dropdown = (props: dropdownProps) => {
   const [openDropdown, setOpenDropDown] = useState(false);
   const [value, setValue] = useState(props.placeholder);
   return (
-    // <div className="flex flex-col text-black">
     <div
       className=" mb-6 cursor-pointer bg-white border-[1px]
        border-roman-silver relative 
@@ -52,7 +51,6 @@ const Dropdown = (props: dropdownProps) => {
         </div>
       )}
     </div>
-    // </div>
   );
 };
 

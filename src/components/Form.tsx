@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Dropdown from './Dropdown';
 import CheckBoxInput from './CheckBoxInput';
 import Button from './Button';
+import axios, { AxiosRequestHeaders } from 'axios';
 const Form = () => {
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
@@ -28,64 +29,79 @@ const Form = () => {
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const location = useLocation();
   const { position } = location.state;
-  // const d = new Date();
-  // const l = d.getFullYear();
+
   const currentYear = new Date().getFullYear();
+  let headers = {
+    'Content-Type': 'application/json',
+  } as unknown as AxiosRequestHeaders;
+  const submitForm = async () => {
+    const formDetails = {
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phoneNumber,
+        country: country,
+        city: city,
+        nationality: nationality,
+        degree: degree,
+        major: major,
+        graduationYear: graduationYear.toString(),
+        GBA: gba,
+        professionalCertificate: professionalCertificate,
+        isWorkExperience: workExperience,
+        totalYearsOfExperience: totalExperience,
+        totalYearsOfRelevantExperience: totalReleventExperience,
+        currentCompany: currentCompany,
+        currentJobTitle: currentJobTitle,
+        linkedInUrl: linkedInUrl,
+        // CV: cv,
+      },
+    };
+
+    axios
+      .post(
+        `${process.env.REACT_APP_STRAPI_URL}api/form-submissions`,
+        JSON.stringify(formDetails),
+        { headers }
+      )
+
+      .then((res: any) => {
+        const formData = new FormData();
+        formData.append('ref', 'api::form-submission.form-submission');
+        formData.append('refId', res.data.data.id);
+        formData.append('field', 'CV');
+        formData.append('files', cv);
+
+        axios
+          .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
+          .then((res: any) => {
+            console.log(res.data);
+          });
+      });
+  };
   const range = (start: number, stop: number, step: number) =>
     Array.from(
       { length: (stop - start) / step + 1 },
       (_, i) => start + i * step
     );
   const allYears = range(currentYear, currentYear - 30, -1);
-  const submitForm = async () => {
-    const formDetails = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phoneNumber,
-      country: country,
-      city: city,
-      nationality: nationality,
-      degree: degree,
-      major: major,
-      graduationYear: graduationYear,
-      GBA: gba,
-      professionalCertificate: professionalCertificate,
-      workExperience: workExperience === 'yes' ? true : false,
-      totalYearsOfExperience: totalExperience,
-      totalYearsOfRelevantExperience: totalReleventExperience,
-      currentCompany: currentCompany,
-      currentJobTitle: currentJobTitle,
-      linkedInUrl: linkedInUrl,
-      CV: cv,
-    };
-    const obj = { data: formDetails };
-    const add = await fetch('http://localhost:1337/api/form-submissions', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(obj),
-    });
 
-    const addResponse = await add.json();
-    console.log(addResponse);
-    console.log(JSON.stringify(obj));
-  };
   const setValNationality = (val: string) => {
     setNationality(val);
   };
 
   const fetchNationality = async () => {
-    const nationality = await fetch('http://localhost:1337/api/nationalities');
-    const jsonNationality = await nationality.json();
-    setAllNationality(jsonNationality.data[0].attributes.nationality);
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
+      .then((res) =>
+        setAllNationality(res.data.data[0].attributes.nationality)
+      );
   };
   const fetchCountry = async () => {
-    const country = await fetch('http://localhost:1337/api/countries');
-    const jsonCountry = await country.json();
-    setAllCountry(jsonCountry.data[0].attributes.country);
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/countries`)
+      .then((res) => setAllCountry(res.data.data[0].attributes.country));
   };
   const setValCountry = (country: string) => {
     setCountry(country);
@@ -285,9 +301,10 @@ const Form = () => {
             placeholder={'CV Upload as PDF.'}
             type={'file'}
             handleChange={(e) => {
-              setCv(e.target.files);
+              setCv(e.target.files[0]);
             }}
           />
+
           <Button
             styles="w-full my-10"
             buttonType="primary"
