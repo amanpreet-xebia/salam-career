@@ -7,7 +7,9 @@ const JobListing = () => {
   const fetchJobs = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
-      .then((res) => setJobs(res.data.data));
+      .then((res) => {
+        setJobs(res.data.data);
+      });
   };
 
   useEffect(() => {
@@ -26,6 +28,7 @@ const JobListing = () => {
               description={item.attributes.description}
               jobCode={item.attributes.jobCode}
               name={item.attributes.name}
+              longDescription={item.attributes.longDescription}
             />
           </div>
         ))}

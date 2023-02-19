@@ -6,11 +6,12 @@ const jobCard = (props: {
   description: string;
   jobCode: string;
   category: string;
+  longDescription: any;
 }) => {
   return (
     <Link
       to={'./form'}
-      state={{ position: props.name }}
+      state={{ position: props.name, longDescription: props.longDescription }}
       className="border-2 flex h-6 justify-center items-center text-center border-salam-blue flex-col my-10 md:m-0 p-3 rounded-md min-h-[200px]"
     >
       <div className="">

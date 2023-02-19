@@ -5,6 +5,9 @@ import Dropdown from './Dropdown';
 import CheckBoxInput from './CheckBoxInput';
 import Button from './Button';
 import axios, { AxiosRequestHeaders } from 'axios';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+
 const Form = () => {
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
@@ -28,7 +31,7 @@ const Form = () => {
   const [cv, setCv] = useState<any>();
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const location = useLocation();
-  const { position } = location.state;
+  const { longDescription } = location.state;
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   let headers = {
@@ -118,12 +121,16 @@ const Form = () => {
   }, []);
   return (
     <div className="h-screen">
-      <div className="text-salam-blue py-10 px-20 text-3xl font-bold">
-        <div>
-          {'Apply for the position of: '}
-          {position}
+      <div className=" flex m-10 mb-0 justify-center">
+        <div className="max-w-screen-md">
+          <span className="text-2xl py-3 font-semibold">Description:</span>
+          <ReactMarkdown
+            rehypePlugins={[rehypeRaw]}
+            children={longDescription}
+          />
         </div>
       </div>
+      <div className="text-salam-blue py-10 px-20 text-3xl font-bold"></div>
       <div className="grid mx-10 md:grid-cols-3">
         <div />
         <div>
@@ -312,7 +319,7 @@ const Form = () => {
             onClick={() => {
               submitForm();
             }}
-            title={'Submit Form'}
+            title={'Apply'}
           />
           <div className="h-[1px] bg-white my-28 md:my-14" />
         </div>
