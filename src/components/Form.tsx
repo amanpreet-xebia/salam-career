@@ -31,7 +31,7 @@ const Form = () => {
   const [cv, setCv] = useState<any>();
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const location = useLocation();
-  const { longDescription } = location.state;
+  const { longDescription, position, category } = location.state;
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   let headers = {
@@ -121,9 +121,14 @@ const Form = () => {
   }, []);
   return (
     <div className="h-screen">
-      <div className=" flex m-10 mb-0 justify-center">
-        <div className="max-w-screen-md">
-          <span className="text-2xl py-3 font-semibold">Description:</span>
+      <div className=" flex mx-12 mt-20 md:m-20  mb-0 justify-center">
+        <div className="max-w-screen-md lg:w-[70%] w-[100%]">
+          <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
+            {position}
+            <span className="inline-block rounded-full bg-green-100 px-4 py-2 mx-3 text-base font-medium text-green-800">
+              {category}
+            </span>
+          </div>
           <ReactMarkdown
             rehypePlugins={[rehypeRaw]}
             children={longDescription}
@@ -131,196 +136,202 @@ const Form = () => {
         </div>
       </div>
       <div className="text-salam-blue py-10 px-20 text-3xl font-bold"></div>
-      <div className="grid mx-10 md:grid-cols-3">
+      <div className="grid mx-10 lg:grid-cols-3">
         <div />
         <div>
-          <div className="font-semibold text-lg mb-10">
-            Personal Information
-          </div>
+          <form>
+            <div className="text-xl font-medium leading-6 text-gray-900">
+              Personal Information
+            </div>
 
-          <InputBox
-            placeholder={'First Name'}
-            type={'text'}
-            handleChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-          />
-          <InputBox
-            placeholder={'Last Name'}
-            type={'text'}
-            handleChange={(e) => {
-              setLastName(e.target.value);
-            }}
-          />
-          <InputBox
-            placeholder={'Email'}
-            type={'email'}
-            handleChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-          <InputBox
-            placeholder={'Phone'}
-            type={'number'}
-            handleChange={(e) => {
-              setPhoneNumber(e.target.value);
-            }}
-          />
-          <div className="h-[1px] bg-salam-blue my-14" />
+            <InputBox
+              required
+              placeholder={'First Name'}
+              type={'text'}
+              handleChange={(e) => {
+                setFirstName(e.target.value);
+              }}
+            />
+            <InputBox
+              placeholder={'Last Name'}
+              type={'text'}
+              handleChange={(e) => {
+                setLastName(e.target.value);
+              }}
+            />
+            <InputBox
+              required
+              placeholder={'Email'}
+              type={'email'}
+              handleChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+            <InputBox
+              placeholder={'Phone'}
+              type={'number'}
+              handleChange={(e) => {
+                setPhoneNumber(e.target.value);
+              }}
+            />
+            <div className="h-[1px] bg-salam-blue my-14" />
 
-          <div className="font-semibold text-lg mb-10">Residence</div>
+            <div className="font-semibold text-lg mb-10">Residence</div>
 
-          <Dropdown
-            choices={allCountry.map(
-              (country: { name: string; code: string }) => country.name
+            <Dropdown
+              choices={allCountry.map(
+                (country: { name: string; code: string }) => country.name
+              )}
+              placeholder={'Country of Residence'}
+              onClick={setValCountry}
+              isMandatory={false}
+            />
+            <InputBox
+              placeholder={'City of Residence'}
+              type={'text'}
+              handleChange={(e) => {
+                setCity(e.target.value);
+              }}
+            />
+
+            <Dropdown
+              choices={allNationality}
+              placeholder={'Nationality'}
+              onClick={setValNationality}
+              isMandatory={false}
+            />
+
+            <div className="h-[1px] bg-salam-blue my-14" />
+
+            <div className="font-semibold text-lg mb-10">
+              Educational Information
+            </div>
+
+            <CheckBoxInput
+              title="Educational Degree"
+              name="educational degree"
+              options={[
+                'Ph.D.',
+                `Master's degree`,
+                `Bachelor's degree`,
+                'Diploma',
+                'High school',
+                'below high school',
+              ]}
+              onClick={(e: any) => {
+                setDegree(e.target.value);
+              }}
+            />
+
+            <InputBox
+              placeholder={'Major'}
+              type={'text'}
+              handleChange={(e) => {
+                setMajor(e.target.value);
+              }}
+            />
+            <Dropdown
+              choices={allYears}
+              placeholder={'Graduation year'}
+              onClick={setValGraduationYear}
+              isMandatory={false}
+            />
+            <InputBox
+              max={100}
+              placeholder={'GBA or %'}
+              type={'number'}
+              handleChange={(e) => {
+                setGba(e.target.value);
+              }}
+            />
+            <InputBox
+              placeholder={'Professional Certificate'}
+              type={'text'}
+              handleChange={(e) => {
+                setProfessionalCertificate(e.target.value);
+              }}
+            />
+            <div className="h-[1px] bg-salam-blue my-14" />
+
+            <div className="font-semibold text-lg mb-10">
+              Professional Experience
+            </div>
+
+            <CheckBoxInput
+              name="work experience"
+              title="Do you have any work experience?"
+              options={['Yes', 'No']}
+              onClick={(e: any) => {
+                setWorkExperience(e.target.value);
+              }}
+            />
+            {workExperience == 'Yes' && (
+              <>
+                <CheckBoxInput
+                  name="total experience"
+                  title="Total years of experience?"
+                  options={['0-3', '3-5', '5-10', '10+']}
+                  onClick={(e: any) => {
+                    setTotalExperience(e.target.value);
+                  }}
+                />
+
+                <CheckBoxInput
+                  name="total relevant experience"
+                  title="Total years of relevant experience?"
+                  options={['0-3', '3-5', '5-10', '10+']}
+                  onClick={(e: any) => {
+                    setTotalReleventExperience(e.target.value);
+                  }}
+                />
+
+                <InputBox
+                  placeholder={'Current Company?'}
+                  type={'text'}
+                  handleChange={(e) => {
+                    setcurrentCompany(e.target.value);
+                  }}
+                />
+
+                <InputBox
+                  placeholder={'Current job title?'}
+                  type={'text'}
+                  handleChange={(e) => {
+                    setCurrentJobTitle(e.target.value);
+                  }}
+                />
+              </>
             )}
-            placeholder={'Country of Residence'}
-            onClick={setValCountry}
-            isMandatory={false}
-          />
-          <InputBox
-            placeholder={'City of Residence'}
-            type={'text'}
-            handleChange={(e) => {
-              setCity(e.target.value);
-            }}
-          />
+            <div className="h-[1px] bg-salam-blue my-14" />
 
-          <Dropdown
-            choices={allNationality}
-            placeholder={'Nationality'}
-            onClick={setValNationality}
-            isMandatory={false}
-          />
+            <div className="font-semibold text-lg mb-10">{'Attachments'}</div>
+            <InputBox
+              required
+              placeholder={'LinkedIn Profile URL'}
+              type={'url'}
+              handleChange={(e) => {
+                setLinkedInUrl(e.target.value);
+              }}
+            />
+            <InputBox
+              required
+              title="CV Upload as PDF"
+              placeholder={'CV Upload as PDF.'}
+              type={'file'}
+              handleChange={(e) => {
+                setCv(e.target.files[0]);
+              }}
+            />
 
-          <div className="h-[1px] bg-salam-blue my-14" />
-
-          <div className="font-semibold text-lg mb-10">
-            Educational Information
-          </div>
-
-          <CheckBoxInput
-            title="Educational Degree"
-            name="educational degree"
-            options={[
-              'Ph.D.',
-              `Master's degree`,
-              `Bachelor's degree`,
-              'Diploma',
-              'High school',
-              'below high school',
-            ]}
-            onClick={(e: any) => {
-              setDegree(e.target.value);
-            }}
-          />
-
-          <InputBox
-            placeholder={'Major'}
-            type={'text'}
-            handleChange={(e) => {
-              setMajor(e.target.value);
-            }}
-          />
-          <Dropdown
-            choices={allYears}
-            placeholder={'Graduation year'}
-            onClick={setValGraduationYear}
-            isMandatory={false}
-          />
-          <InputBox
-            max={100}
-            placeholder={'GBA or %'}
-            type={'number'}
-            handleChange={(e) => {
-              setGba(e.target.value);
-            }}
-          />
-          <InputBox
-            placeholder={'Professional Certificate'}
-            type={'text'}
-            handleChange={(e) => {
-              setProfessionalCertificate(e.target.value);
-            }}
-          />
-          <div className="h-[1px] bg-salam-blue my-14" />
-
-          <div className="font-semibold text-lg mb-10">
-            Professional Experience
-          </div>
-
-          <CheckBoxInput
-            name="work experience"
-            title="Do you have any work experience?"
-            options={['yes', 'no']}
-            onClick={(e: any) => {
-              setWorkExperience(e.target.value);
-            }}
-          />
-          {workExperience === 'yes' && (
-            <>
-              <CheckBoxInput
-                name="total experience"
-                title="Total years of experience?"
-                options={['0-3', '3-5', '5-10', '10+']}
-                onClick={(e: any) => {
-                  setTotalExperience(e.target.value);
-                }}
-              />
-
-              <CheckBoxInput
-                name="total relevant experience"
-                title="Total years of relevant experience?"
-                options={['0-3', '3-5', '5-10', '10+']}
-                onClick={(e: any) => {
-                  setTotalReleventExperience(e.target.value);
-                }}
-              />
-
-              <InputBox
-                placeholder={'Current Company?'}
-                type={'text'}
-                handleChange={(e) => {
-                  setcurrentCompany(e.target.value);
-                }}
-              />
-
-              <InputBox
-                placeholder={'Current job title?'}
-                type={'text'}
-                handleChange={(e) => {
-                  setCurrentJobTitle(e.target.value);
-                }}
-              />
-            </>
-          )}
-          <div className="h-[1px] bg-salam-blue my-14" />
-
-          <div className="font-semibold text-lg mb-10">{'Attachments'}</div>
-          <InputBox
-            placeholder={'LinkedIn Profile URL'}
-            type={'text'}
-            handleChange={(e) => {
-              setLinkedInUrl(e.target.value);
-            }}
-          />
-          <InputBox
-            title="CV Upload as PDF"
-            placeholder={'CV Upload as PDF.'}
-            type={'file'}
-            handleChange={(e) => {
-              setCv(e.target.files[0]);
-            }}
-          />
-
-          <Button
-            styles="w-full my-10"
-            buttonType="primary"
-            onClick={() => {
-              submitForm();
-            }}
-            title={'Apply'}
-          />
+            <Button
+              styles="w-full my-10"
+              buttonType="primary"
+              onClick={() => {
+                submitForm();
+              }}
+              title={'Apply'}
+            />
+          </form>
           <div className="h-[1px] bg-white my-28 md:my-14" />
         </div>
         <div />
