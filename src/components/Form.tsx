@@ -121,7 +121,7 @@ const Form = () => {
   }, []);
   return (
     <div className="h-screen">
-      <div className=" flex mx-12 mt-20 md:m-20  mb-0 justify-center">
+      <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
         <div className="max-w-screen-md lg:w-[70%] w-[100%]">
           <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
             {position}
@@ -176,7 +176,9 @@ const Form = () => {
             />
             <div className="h-[1px] bg-salam-blue my-14" />
 
-            <div className="font-semibold text-lg mb-10">Residence</div>
+            <div className="text-xl mb-4 font-medium leading-6 text-gray-900">
+              Residence
+            </div>
 
             <Dropdown
               choices={allCountry.map(
@@ -203,7 +205,7 @@ const Form = () => {
 
             <div className="h-[1px] bg-salam-blue my-14" />
 
-            <div className="font-semibold text-lg mb-10">
+            <div className="text-xl font-medium leading-6 text-gray-900">
               Educational Information
             </div>
 
@@ -253,7 +255,7 @@ const Form = () => {
             />
             <div className="h-[1px] bg-salam-blue my-14" />
 
-            <div className="font-semibold text-lg mb-10">
+            <div className="text-xl font-medium leading-6 text-gray-900">
               Professional Experience
             </div>
 
@@ -304,7 +306,9 @@ const Form = () => {
             )}
             <div className="h-[1px] bg-salam-blue my-14" />
 
-            <div className="font-semibold text-lg mb-10">{'Attachments'}</div>
+            <div className="text-xl font-medium leading-6 text-gray-900">
+              {'Attachments'}
+            </div>
             <InputBox
               required
               placeholder={'LinkedIn Profile URL'}
