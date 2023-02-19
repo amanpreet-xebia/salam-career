@@ -7,6 +7,7 @@ import JobListing from './components/JobListing';
 import Navbar from './components/Navbar';
 import SuccessfulScreen from './components/SuccessfulScreen';
 import { translations } from './constants';
+import './App.css';
 function App() {
   const [locale, setLocale] = useState('en');
   const translation: any = translations;
