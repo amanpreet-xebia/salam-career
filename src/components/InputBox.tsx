@@ -10,11 +10,12 @@ const InputBox = (props: {
   inputStyles?: string;
   max?: number;
   handleChange?: (e: any) => void;
+  accept?: string
 }) => {
   const data = useContext(AppContext);
   let { locale } = data.state;
   return (
-    <div className={`my-4 ${props.styles}`}>
+    <div className={`${props.styles}`}>
       {props.title && <span>{props.title}</span>}
       <div className="relative  ">
         {props.icon && (
@@ -32,6 +33,7 @@ const InputBox = (props: {
           placeholder={props.placeholder}
           className={`w-full p-3 ${props.inputStyles} placeholder:align-text-top outline-none focus:outline-bright-green outline-offset-0 border-roman-silver border-[1px] rounded-lg`}
           onChange={props.handleChange}
+          accept={props.accept}
         ></input>
       </div>
     </div>
