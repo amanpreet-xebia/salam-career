@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -78,6 +78,7 @@ const Form = () => {
         currentCompany: currentCompany,
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
+        jobTitle: position,
       },
     };
 
