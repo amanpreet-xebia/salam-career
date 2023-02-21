@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,6 +20,13 @@ const Form = () => {
       },
     });
   };
+  const handlePhoneNumber = (e: any) => {
+    const regex = /^[0-9\b]+$/;
+    if (e.target.value === '' || regex.test(e.target.value)) {
+      setPhoneNumber(e.target.value);
+    }
+  };
+
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
@@ -31,7 +39,7 @@ const Form = () => {
   const [degree, setDegree] = useState('');
   const [major, setMajor] = useState('');
   const [graduationYear, setGraduationYear] = useState('');
-  const [gba, setGba] = useState('');
+  const [gpa, setGpa] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = useState('');
   const [workExperience, setWorkExperience] = useState('');
   const [totalExperience, setTotalExperience] = useState('');
@@ -62,7 +70,7 @@ const Form = () => {
         degree: degree,
         major: major,
         graduationYear: graduationYear.toString(),
-        GBA: gba,
+        GPA: gpa,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
         totalYearsOfExperience: totalExperience,
@@ -92,10 +100,13 @@ const Form = () => {
           .then((res: any) => {
             console.log(res.data);
             navigate('/success');
+          })
+          .catch(() => {
+            showToast('Something Went Wrong');
           });
       })
-      .catch((err) => {
-        showToast(err.response.data.error.message);
+      .catch(() => {
+        showToast('Something Went Wrong');
       });
   };
   const range = (start: number, stop: number, step: number) =>
@@ -112,14 +123,18 @@ const Form = () => {
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
-      .then((res) =>
-        setAllNationality(res.data.data[0].attributes.nationality)
-      );
+      .then((res) => setAllNationality(res.data.data[0].attributes.nationality))
+      .catch(() => {
+        showToast('Something Went Wrong');
+      });
   };
   const fetchCountry = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/countries`)
-      .then((res) => setAllCountry(res.data.data[0].attributes.country));
+      .then((res) => setAllCountry(res.data.data[0].attributes.country))
+      .catch(() => {
+        showToast('Something Went Wrong');
+      });
   };
   const setValCountry = (country: string) => {
     setCountry(country);
@@ -209,11 +224,12 @@ const Form = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
+                        required
                         placeholder={'Phone'}
-                        type={'number'}
-                        handleChange={(e) => {
-                          setPhoneNumber(e.target.value);
-                        }}
+                        type={'text'}
+                        maxLength={10}
+                        value={phoneNumber}
+                        handleChange={handlePhoneNumber}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -336,11 +352,10 @@ const Form = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        max={100}
-                        placeholder={'GBA or %'}
+                        placeholder={'GPA or %'}
                         type={'number'}
                         handleChange={(e) => {
-                          setGba(e.target.value);
+                          setGpa(e.target.value);
                         }}
                       />
                     </div>
@@ -453,7 +468,6 @@ const Form = () => {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
                       <InputBox
-                        required
                         placeholder={'LinkedIn Profile URL'}
                         type={'url'}
                         handleChange={(e) => {
