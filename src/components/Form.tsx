@@ -40,6 +40,7 @@ const Form = () => {
   const [currentJobTitle, setCurrentJobTitle] = useState('');
   const [cv, setCv] = useState<any>();
   const [linkedInUrl, setLinkedInUrl] = useState('');
+  const [gender, setGender] = useState('');
   const location = useLocation();
   const { longDescription, position, category } = location.state;
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const Form = () => {
         lastName: lastName,
         email: email,
         phone: phoneNumber,
+        Gender: gender,
         country: country,
         city: city,
         nationality: nationality,
@@ -220,7 +222,7 @@ const Form = () => {
                         name="gender"
                         options={['Male', 'Female']}
                         onClick={(e: any) => {
-                          setDegree(e.target.value);
+                          setGender(e.target.value);
                         }}
                       />
                     </div>
