@@ -9,6 +9,7 @@ const InputBox = (props: {
   styles?: string;
   inputStyles?: string;
   max?: number;
+  required?: boolean;
   handleChange?: (e: any) => void;
   accept?: string
 }) => {
@@ -28,6 +29,7 @@ const InputBox = (props: {
           </label>
         )}
         <input
+          required={props.required}
           max={props.max}
           type={props.type}
           placeholder={props.placeholder}

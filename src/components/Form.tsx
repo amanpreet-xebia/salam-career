@@ -1,11 +1,4 @@
-<<<<<<< Updated upstream
-import React, { useEffect, useState } from 'react';
-import InputBox from './InputBox';
-import { useLocation } from 'react-router-dom';
-import Dropdown from './Dropdown';
-import CheckBoxInput from './CheckBoxInput';
-import Button from './Button';
-=======
+
 import React, { useEffect, useState } from "react";
 import InputBox from "./InputBox";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -16,7 +9,6 @@ import axios, { AxiosRequestHeaders } from "axios";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 
->>>>>>> Stashed changes
 const Form = () => {
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
@@ -40,14 +32,11 @@ const Form = () => {
   const [cv, setCv] = useState<any>();
   const [linkedInUrl, setLinkedInUrl] = useState("");
   const location = useLocation();
-  const { position } = location.state;
-  // const d = new Date();
-  // const l = d.getFullYear();
+  const { longDescription, position, category } = location.state;
+  const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
-<<<<<<< Updated upstream
-=======
   let headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   } as unknown as AxiosRequestHeaders;
   const submitForm = async () => {
     const formDetails = {
@@ -83,75 +72,41 @@ const Form = () => {
 
       .then((res: any) => {
         const formData = new FormData();
-        formData.append("ref", "api::form-submission.form-submission");
-        formData.append("refId", res.data.data.id);
-        formData.append("field", "CV");
-        formData.append("files", cv);
+        formData.append('ref', 'api::form-submission.form-submission');
+        formData.append('refId', res.data.data.id);
+        formData.append('field', 'CV');
+        formData.append('files', cv);
 
         axios
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
           .then((res: any) => {
             console.log(res.data);
-            navigate("/success");
+            navigate('/success');
           });
       });
   };
->>>>>>> Stashed changes
   const range = (start: number, stop: number, step: number) =>
     Array.from(
       { length: (stop - start) / step + 1 },
       (_, i) => start + i * step
     );
   const allYears = range(currentYear, currentYear - 30, -1);
-  const submitForm = async () => {
-    const formDetails = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phoneNumber,
-      country: country,
-      city: city,
-      nationality: nationality,
-      degree: degree,
-      major: major,
-      graduationYear: graduationYear,
-      GBA: gba,
-      professionalCertificate: professionalCertificate,
-      workExperience: workExperience === 'yes' ? true : false,
-      totalYearsOfExperience: totalExperience,
-      totalYearsOfRelevantExperience: totalReleventExperience,
-      currentCompany: currentCompany,
-      currentJobTitle: currentJobTitle,
-      linkedInUrl: linkedInUrl,
-      CV: cv,
-    };
-    const obj = { data: formDetails };
-    const add = await fetch('http://localhost:1337/api/form-submissions', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(obj),
-    });
 
-    const addResponse = await add.json();
-    console.log(addResponse);
-    console.log(JSON.stringify(obj));
-  };
   const setValNationality = (val: string) => {
     setNationality(val);
   };
 
   const fetchNationality = async () => {
-    const nationality = await fetch('http://localhost:1337/api/nationalities');
-    const jsonNationality = await nationality.json();
-    setAllNationality(jsonNationality.data[0].attributes.nationality);
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
+      .then((res) =>
+        setAllNationality(res.data.data[0].attributes.nationality)
+      );
   };
   const fetchCountry = async () => {
-    const country = await fetch('http://localhost:1337/api/countries');
-    const jsonCountry = await country.json();
-    setAllCountry(jsonCountry.data[0].attributes.country);
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/countries`)
+      .then((res) => setAllCountry(res.data.data[0].attributes.country));
   };
   const setValCountry = (country: string) => {
     setCountry(country);
@@ -160,23 +115,33 @@ const Form = () => {
   const setValGraduationYear = (year: string) => {
     setGraduationYear(year);
   };
+  
   const handleFileValidation = (e: any) => {
-    const fileSizeInKB = cv.size / 1024;
+    const fileSizeInKB = e.target.files[0]?.size / 1024;
     if (fileSizeInKB > 5120) {
       e.target.value = null;
       window?.alert("please upload file under 5MB");
     }
   };
+ 
   useEffect(() => {
     fetchCountry();
     fetchNationality();
   }, []);
   return (
     <div className="h-screen">
-      <div className="text-salam-blue py-10 px-20 text-3xl font-bold">
-        <div>
-          {'Apply for the position of: '}
-          {position}
+      <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
+        <div className="max-w-screen-md lg:w-[70%] w-[100%]">
+          <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
+            {position}
+            <span className="inline-block rounded-full bg-green-100 px-4 py-2 mx-3 text-base font-medium text-green-800">
+              {category}
+            </span>
+          </div>
+          <ReactMarkdown
+            rehypePlugins={[rehypeRaw]}
+            children={longDescription}
+          />
         </div>
       </div>
       {/* Application form */}
@@ -496,7 +461,7 @@ const Form = () => {
             title={"Apply"}
           />
         </form>
-      </div>
+    </div>
     </div>
   );
 };

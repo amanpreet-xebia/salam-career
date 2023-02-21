@@ -6,18 +6,23 @@ const jobCard = (props: {
   description: string;
   jobCode: string;
   category: string;
-  
+  longDescription: any;
 }) => {
   return (
-    <Link
-      to={'./form'}
-      state={{ position: props.name }}
-      className="border-2 flex h-6 justify-center items-center text-center border-salam-blue flex-col p-3 rounded-md min-h-[200px]"
-    >
-      <div className="">
-        <div>
-          <span className="font-bold">{'Job Title: '}</span>
-          {props.name}
+    <li className=" col-span-1 divide-y divide-gray-200 rounded-lg bg-white">
+      <div className="flex w-full items-center justify-between space-x-6 p-6">
+        <div className="flex-1 truncate">
+          <div className="flex items-center space-x-3">
+            <h3 className="truncate text-sm font-medium text-gray-900">
+              {props.name}
+            </h3>
+            <span className="inline-block flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+              {props.category}
+            </span>
+          </div>
+          <p className="mt-1 truncate text-sm text-gray-500">
+            {props.description}
+          </p>
         </div>
       </div>
       <div>
@@ -39,7 +44,7 @@ const jobCard = (props: {
           </div>
         </div>
       </div>
-    </Link>
+    </li>
   );
 };
 

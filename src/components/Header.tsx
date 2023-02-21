@@ -74,13 +74,6 @@ const Header = () => {
           onClick={() => {
             value.setLocale(locale === 'en' ? 'ar' : 'en');
           }}
-          // onClick={() => {
-          //   i18next.language === 'en'
-          //     ? i18next.changeLanguage('ar')
-          //     : i18next.changeLanguage('en');
-
-          //   localStorage.setItem('selectedLanguage', i18next.language);
-          // }}
         >
           <span className="text-white font-interBold text-sm mr-[11px]">
             {' '}
