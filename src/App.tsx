@@ -13,8 +13,8 @@ function App() {
   const translation: any = translations;
 
   return (
-    <div dir={locale === 'en' ? 'ltr' : 'rtl'} className="App">
-      <Router>
+    <div dir='ltr' className="App">
+      <Router basename="/recruitment">
         <AppContext.Provider
           value={{
             state: {

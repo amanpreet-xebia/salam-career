@@ -20,7 +20,7 @@ const Footer = () => {
           <div className="  flex justify-around gap-6 md:gap-8 text-center">
             <div>
               <a
-                href={`${process.env.SALAM_URL}${selectedLanguage}/support/terms-conditions`}
+                href={`https://salam.sa/en/support/terms-conditions`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -29,7 +29,7 @@ const Footer = () => {
             </div>
             <div>
               <a
-                href={`${process.env.SALAM_URL}${selectedLanguage}/support/security-policy`}
+                href={`https://salam.sa/en/support/security-policy`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -38,7 +38,7 @@ const Footer = () => {
             </div>
             <div>
               <a
-                href={`${process.env.SALAM_URL}${selectedLanguage}/support/privacy-policy`}
+                href={`https://salam.sa/en/support/privacy-policy`}
                 target="_blank"
                 rel="noreferrer"
               >
