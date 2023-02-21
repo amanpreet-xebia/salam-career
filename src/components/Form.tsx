@@ -20,7 +20,6 @@ const Form = () => {
     });
   };
   const [allNationality, setAllNationality] = useState([]);
-  const [emailField, setEmailField] = useState('');
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -69,7 +68,6 @@ const Form = () => {
         currentCompany: currentCompany,
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
-        emailField: emailField,
       },
     };
 
@@ -160,7 +158,8 @@ const Form = () => {
       {/* Application form */}
       <div className="bg-gray-100 p-10 mt-10">
         <form
-          onSubmit={() => {
+          onSubmit={(e) => {
+            e.preventDefault();
             submitForm();
           }}
         >
@@ -212,6 +211,16 @@ const Form = () => {
                         type={'number'}
                         handleChange={(e) => {
                           setPhoneNumber(e.target.value);
+                        }}
+                      />
+                    </div>
+                    <div className="col-span-6 sm:col-span-3">
+                      <CheckBoxInput
+                        title="Gender"
+                        name="gender"
+                        options={['Male', 'Female']}
+                        onClick={(e: any) => {
+                          setDegree(e.target.value);
                         }}
                       />
                     </div>
@@ -451,15 +460,6 @@ const Form = () => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-6">
-                      <InputBox
-                        required
-                        placeholder={'Email'}
-                        type={'text'}
-                        handleChange={(e) => {
-                          // setLinkedInUrl(e.target.valu e);
-                          setEmailField(e.target.value);
-                        }}
-                      />
                       <InputBox
                         required
                         title="CV Upload as PDF"
