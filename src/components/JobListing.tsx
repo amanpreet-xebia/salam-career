@@ -22,7 +22,7 @@ const JobListing = () => {
         <span>Apply for Jobs at Salam</span>
       </div>
       <div
-        className={'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-8'}
+        className={'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-8 rounded-xl'}
       >
         <ul
           role="list"

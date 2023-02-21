@@ -1,5 +1,6 @@
 ul{
   list-style: disc;
+  margin-left: 0;
 }
 ol{
   list-style: auto;
