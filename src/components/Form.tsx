@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Dropdown from './Dropdown';
 import CheckBoxInput from './CheckBoxInput';
 import Button from './Button';
@@ -50,7 +50,12 @@ const Form = ({ jobId }: any) => {
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const [gender, setGender] = useState('');
   const location = useLocation();
-  const { longDescription, position, category } = location.state;
+  const params = useParams();
+  const [longDescription, setLongDescription] = useState('');
+  const [position, setPosition] = useState('');
+  const [category, setCategory] = useState('');
+  const jobCode = params.jobId;
+
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   let headers = {
@@ -154,9 +159,31 @@ const Form = ({ jobId }: any) => {
   };
 
   useEffect(() => {
+    if (location.state) {
+      setPosition(location.state.position);
+      setLongDescription(location.state.longDescription);
+      setCategory(location.state.category);
+    } else {
+      axios
+        .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
+        .then((res) => {
+          res.data.data
+            .filter((item: any) => item.attributes.jobCode === jobCode)
+            .map((item: any) => {
+              setPosition(item.attributes.name);
+
+              setLongDescription(item.attributes.longDescription);
+
+              setCategory(item.attributes.category);
+            });
+        })
+        .catch((err) => {
+          showToast('Something Went Wrong');
+        });
+    }
     fetchCountry();
     fetchNationality();
-  }, []);
+  }, [position, longDescription, category]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
