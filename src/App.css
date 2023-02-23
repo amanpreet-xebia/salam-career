@@ -1,10 +1,51 @@
-ul{
+ul {
   list-style: disc;
   margin-left: 0;
 }
-ol{
+ol {
   list-style: auto;
 }
-ul,ol{
+ul,
+ol {
   margin-left: 20px;
+}
+/* select search css */
+
+.select-search-container {
+  width: 100%;
+}
+.react-select-container .react-select__control{
+  background-color: white;
+  height: auto;
+  padding: 0.5rem 0.5rem;
+  border: 1px solid rgb(128, 144, 154);
+  border-radius: 8px;
+  color: black
+}
+react-select-container .react-select__control:hover{
+  outline: solid #00b140;
+}
+.select-search-container input:hover{
+  border-color: rgb(128, 144, 154) !important;
+}
+.select-search-container input:focus {
+  outline: solid #00b140;
+}
+.select-search-select{
+  background-color: white;
+  outline: solid #00b140;
+  border: 1px solid;
+}
+.select-search-has-focus .select-search-select{
+  border-color: #00b140;
+}
+ul.select-search-options{
+  margin-left: 0;
+}
+ul.select-search-options li button{
+  background-color: white;
+  color: black
+}
+.select-search-is-highlighted, .select-search-option:not(.select-search-is-selected):hover{
+  background: rgba(26, 176, 70, 0.2);
 }
