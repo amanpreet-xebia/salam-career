@@ -8,9 +8,9 @@ import AppContext from '../AppContext';
 const Footer = () => {
   const value = useContext(AppContext);
   let { footerLinks } = value.state.languages;
-  const selectedLanguage = localStorage.getItem('selectedLanguage');
+  // const selectedLanguage = localStorage.getItem('selectedLanguage');
   return (
-    <footer className="fixed bottom-0">
+    <footer className="relative">
       <div className=" w-screen bg-salam-blue py-5 align-bottom pb-12 md:pb-5 md:px-12 self-end px-4 text-sm  md:text-sm">
         <div className="text-white flex  flex-col md:flex-row gap-6 md:gap-8 place-items-center">
           <div className="items-center self-center">
@@ -20,7 +20,7 @@ const Footer = () => {
           <div className="  flex justify-around gap-6 md:gap-8 text-center">
             <div>
               <a
-                href={`${process.env.SALAM_URL}${selectedLanguage}/support/terms-conditions`}
+                href={`https://salam.sa/en/support/terms-conditions`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -29,7 +29,7 @@ const Footer = () => {
             </div>
             <div>
               <a
-                href={`${process.env.SALAM_URL}${selectedLanguage}/support/security-policy`}
+                href={`https://salam.sa/en/support/security-policy`}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -38,7 +38,7 @@ const Footer = () => {
             </div>
             <div>
               <a
-                href={`${process.env.SALAM_URL}${selectedLanguage}/support/privacy-policy`}
+                href={`https://salam.sa/en/support/privacy-policy`}
                 target="_blank"
                 rel="noreferrer"
               >

@@ -11,7 +11,7 @@ import rehypeRaw from "rehype-raw";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Form = () => {
+const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
       data: {
@@ -20,28 +20,35 @@ const Form = () => {
       },
     });
   };
+  const handlePhoneNumber = (e: any) => {
+    const regex = /^[0-9\b]+$/;
+    if (e.target.value === '' || regex.test(e.target.value)) {
+      setPhoneNumber(e.target.value);
+    }
+  };
 
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [nationality, setNationality] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [nationality, setNationality] = useState({'value': String, 'label': String });
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({'value': String, 'label': String });
-  const [city, setCity] = useState("");
-  const [degree, setDegree] = useState("");
-  const [major, setMajor] = useState("");
-  const [graduationYear, setGraduationYear] = useState("");
-  const [gba, setGba] = useState("");
-  const [professionalCertificate, setProfessionalCertificate] = useState("");
-  const [workExperience, setWorkExperience] = useState("");
-  const [totalExperience, setTotalExperience] = useState("");
-  const [totalReleventExperience, setTotalReleventExperience] = useState("");
-  const [currentCompany, setcurrentCompany] = useState("");
-  const [currentJobTitle, setCurrentJobTitle] = useState("");
+  const [city, setCity] = useState('');
+  const [degree, setDegree] = useState('');
+  const [major, setMajor] = useState('');
+  const [graduationYear, setGraduationYear] = useState('');
+  const [gpa, setGpa] = useState('');
+  const [professionalCertificate, setProfessionalCertificate] = useState('');
+  const [workExperience, setWorkExperience] = useState('');
+  const [totalExperience, setTotalExperience] = useState('');
+  const [totalReleventExperience, setTotalReleventExperience] = useState('');
+  const [currentCompany, setcurrentCompany] = useState('');
+  const [currentJobTitle, setCurrentJobTitle] = useState('');
   const [cv, setCv] = useState<any>();
-  const [linkedInUrl, setLinkedInUrl] = useState("");
+  const [linkedInUrl, setLinkedInUrl] = useState('');
+  const [gender, setGender] = useState('');
   const location = useLocation();
   const { longDescription, position, category } = location.state;
   const navigate = useNavigate();
@@ -56,13 +63,14 @@ const Form = () => {
         lastName: lastName,
         email: email,
         phone: phoneNumber,
+        Gender: gender,
         country: country.value,
         city: city,
-        nationality: nationality,
+        nationality: nationality.value,
         degree: degree,
         major: major,
         graduationYear: graduationYear.toString(),
-        GBA: gba,
+        GPA: gpa,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
         totalYearsOfExperience: totalExperience,
@@ -70,6 +78,7 @@ const Form = () => {
         currentCompany: currentCompany,
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
+        jobTitle: position,
       },
     };
 
@@ -91,11 +100,14 @@ const Form = () => {
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
           .then((res: any) => {
             console.log(res.data);
-            navigate("/success");
+            navigate('/success');
+          })
+          .catch(() => {
+            showToast('Something Went Wrong');
           });
       })
-      .catch((err) => {
-        showToast(err.response.data.error.message);
+      .catch(() => {
+        showToast('Something Went Wrong');
       });
   };
   const range = (start: number, stop: number, step: number) =>
@@ -105,16 +117,22 @@ const Form = () => {
     );
   const allYears = range(currentYear, currentYear - 30, -1);
 
-  const setValNationality = (val: string) => {
+  const setValNationality = (val: any) => {
     setNationality(val);
   };
 
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
-      .then((res) =>
-        setAllNationality(res.data.data[0].attributes.nationality)
+      .then((res) => {
+        const nationalities = res.data.data[0].attributes.nationality.map(
+        (nationality: String) => ({ value: nationality, label: nationality })
       );
+      setAllNationality(nationalities);
+    })
+      .catch(() => {
+        showToast('Something Went Wrong');
+      });
   };
   const fetchCountry = async () => {
     axios
@@ -124,6 +142,9 @@ const Form = () => {
           (country: String) => ({ value: country, label: country })
         );
         setAllCountry(countries);
+      })
+      .catch(() => {
+        showToast('Something Went Wrong');
       });
   };
 
@@ -152,7 +173,7 @@ const Form = () => {
 
 
   return (
-    <div className="h-screen">
+    <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
         <div className="max-w-screen-md lg:w-[70%] w-[100%]">
           <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
@@ -185,7 +206,7 @@ const Form = () => {
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow  sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
@@ -219,11 +240,12 @@ const Form = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        placeholder={"Phone"}
-                        type={"number"}
-                        handleChange={(e) => {
-                          setPhoneNumber(e.target.value);
-                        }}
+                        required
+                        placeholder={'Phone'}
+                        type={'text'}
+                        maxLength={10}
+                        value={phoneNumber}
+                        handleChange={handlePhoneNumber}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -232,7 +254,7 @@ const Form = () => {
                         name="gender"
                         options={["Male", "Female"]}
                         onClick={(e: any) => {
-                          setDegree(e.target.value);
+                          setGender(e.target.value);
                         }}
                       />
                     </div>
@@ -250,13 +272,13 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Residence
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow  sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
@@ -280,11 +302,20 @@ const Form = () => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
+                      {/* <Dropdown
                         choices={allNationality}
                         placeholder={"Nationality"}
                         onClick={setValNationality}
                         isMandatory={false}
+                      /> */}
+                      <Select
+                        options={allNationality}
+                        isSearchable
+                        onChange={setValNationality}
+                        // value={country.value}
+                        placeholder="Nationality"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                   </div>
@@ -301,13 +332,13 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Educational Information
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow  sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
@@ -346,11 +377,10 @@ const Form = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        max={100}
-                        placeholder={"GBA or %"}
-                        type={"number"}
+                        placeholder={'GPA or %'}
+                        type={'number'}
                         handleChange={(e) => {
-                          setGba(e.target.value);
+                          setGpa(e.target.value);
                         }}
                       />
                     </div>
@@ -377,13 +407,13 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Professional Experience
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow  sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
@@ -452,26 +482,25 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0  font-medium leading-6 text-gray-900">
                   Attachments
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow  sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
                       <InputBox
-                        required
-                        placeholder={"LinkedIn Profile URL"}
-                        type={"url"}
+                        placeholder={'LinkedIn Profile URL'}
+                        type={'url'}
                         handleChange={(e) => {
                           setLinkedInUrl(e.target.value);
                         }}
                       />
                     </div>
-                    <div className="col-span-6 sm:col-span-6">
+                    <div className="col-span-6 sm:col-span-6 ">
                       <InputBox
                         required
                         title="CV Upload as PDF"
@@ -492,7 +521,7 @@ const Form = () => {
 
           <Button
             onClick={() => {}}
-            styles="my-10 font-bold mx-auto w-3/12 text-lg"
+            styles="my-10  font-bold mx-auto w-3/12 text-lg"
             buttonType="primary"
             title={"Apply"}
           />

@@ -11,10 +11,9 @@ import './App.css';
 function App() {
   const [locale, setLocale] = useState('en');
   const translation: any = translations;
-
   return (
-    <div dir={locale === 'en' ? 'ltr' : 'rtl'} className="App">
-      <Router>
+    <div dir="ltr" className="">
+      <Router basename="/recruitment">
         <AppContext.Provider
           value={{
             state: {
@@ -27,7 +26,7 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<JobListing />} />
-            <Route path="/form" element={<Form />} />
+            <Route path="/form/:jobId" element={<Form />} />
             <Route path="/success" element={<SuccessfulScreen />} />
           </Routes>
           <Footer />

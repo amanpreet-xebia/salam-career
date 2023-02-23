@@ -6,7 +6,7 @@ import Button from './Button';
 const SuccessfulScreen = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col justify-center items-center p-5 h-[600px] align-middle">
+    <div className="flex h-full min-h-screen flex-col justify-center items-center p-5 align-middle">
       <FaThumbsUp color="green" size={'100'} />
       <span className="text-2xl  text-salamgreen text-center my-5">
         {'We have successfully recieved your application'}
