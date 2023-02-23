@@ -29,7 +29,7 @@ const JobListing = () => {
     fetchJobs();
   }, []);
   return (
-    <div className="h-screen">
+    <div className="h-full min-h-screen">
       <div className="text-salam-blue p-20 pb-10 text-3xl font-bold">
         <span>Apply for Jobs at Salam</span>
       </div>
@@ -55,7 +55,6 @@ const JobListing = () => {
         </ul>
       </div>
       <ToastContainer />
-      <div className="h-[1px] bg-white my-60 md:my-16" />
     </div>
   );
 };

@@ -13,7 +13,7 @@ const Button = (props: buttonProps) => {
       type="submit"
       disabled={props.disabled}
       onClick={props.onClick}
-      className={` block ${props.styles}  justify-center  ${
+      className={` block ${props.styles} min-w-max  justify-center  ${
         props.buttonType === 'primary' && 'bg-bright-green text-white'
       } ${
         props.buttonType === 'dark' &&
