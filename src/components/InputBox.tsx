@@ -8,10 +8,11 @@ const InputBox = (props: {
   type: string;
   styles?: string;
   inputStyles?: string;
-  max?: number;
+  maxLength?: number;
   required?: boolean;
   handleChange?: (e: any) => void;
-  accept?: string
+  accept?: string;
+  value?: any;
 }) => {
   const data = useContext(AppContext);
   let { locale } = data.state;
@@ -29,8 +30,9 @@ const InputBox = (props: {
           </label>
         )}
         <input
+          value={props.value}
           required={props.required}
-          max={props.max}
+          maxLength={props.maxLength}
           type={props.type}
           placeholder={props.placeholder}
           className={`w-full p-3 ${props.inputStyles} placeholder:align-text-top outline-none focus:outline-bright-green outline-offset-0 border-roman-silver border-[1px] rounded-lg`}

@@ -1,15 +1,27 @@
 /* eslint-disable jsx-a11y/no-redundant-roles */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 import JobCard from './jobCard';
 
 const JobListing = () => {
   const [jobs, setJobs] = useState([]);
+  const showToast = (msg: string) => {
+    toast.error(msg, {
+      data: {
+        title: 'Hello World Again',
+        position: toast.POSITION.TOP_CENTER,
+      },
+    });
+  };
   const fetchJobs = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
       .then((res) => {
         setJobs(res.data.data);
+      })
+      .catch((err) => {
+        showToast('Something Went Wrong');
       });
   };
 
@@ -17,12 +29,14 @@ const JobListing = () => {
     fetchJobs();
   }, []);
   return (
-    <div className="h-screen">
+    <div className="h-full min-h-screen">
       <div className="text-salam-blue p-20 pb-10 text-3xl font-bold">
         <span>Apply for Jobs at Salam</span>
       </div>
       <div
-        className={'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-8 rounded-xl'}
+        className={
+          'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-8 rounded-xl'
+        }
       >
         <ul
           role="list"
@@ -40,7 +54,7 @@ const JobListing = () => {
           ))}
         </ul>
       </div>
-      <div className="h-[1px] bg-white my-60 md:my-16" />
+      <ToastContainer />
     </div>
   );
 };

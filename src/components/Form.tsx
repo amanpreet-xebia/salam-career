@@ -1,42 +1,65 @@
-
 import React, { useEffect, useState } from "react";
 import InputBox from "./InputBox";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Dropdown from "./Dropdown";
+import Select from "react-select";
 import CheckBoxInput from "./CheckBoxInput";
 import Button from "./Button";
 import axios, { AxiosRequestHeaders } from "axios";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const Form = () => {
+const Form = ({ jobId }: any) => {
+  const showToast = (msg: string) => {
+    toast.error(msg, {
+      data: {
+        title: "",
+        position: toast.POSITION.TOP_CENTER,
+      },
+    });
+  };
+  const handlePhoneNumber = (e: any) => {
+    const regex = /^[0-9\b]+$/;
+    if (e.target.value === '' || regex.test(e.target.value)) {
+      setPhoneNumber(e.target.value);
+    }
+  };
+
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [nationality, setNationality] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [degree, setDegree] = useState("");
-  const [major, setMajor] = useState("");
-  const [graduationYear, setGraduationYear] = useState("");
-  const [gba, setGba] = useState("");
-  const [professionalCertificate, setProfessionalCertificate] = useState("");
-  const [workExperience, setWorkExperience] = useState("");
-  const [totalExperience, setTotalExperience] = useState("");
-  const [totalReleventExperience, setTotalReleventExperience] = useState("");
-  const [currentCompany, setcurrentCompany] = useState("");
-  const [currentJobTitle, setCurrentJobTitle] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [nationality, setNationality] = useState({'value': String, 'label': String });
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [country, setCountry] = useState({'value': String, 'label': String });
+  const [city, setCity] = useState('');
+  const [degree, setDegree] = useState('');
+  const [major, setMajor] = useState('');
+  const [graduationYear, setGraduationYear] = useState('');
+  const [gpa, setGpa] = useState('');
+  const [professionalCertificate, setProfessionalCertificate] = useState('');
+  const [workExperience, setWorkExperience] = useState('');
+  const [totalExperience, setTotalExperience] = useState('');
+  const [totalReleventExperience, setTotalReleventExperience] = useState('');
+  const [currentCompany, setcurrentCompany] = useState('');
+  const [currentJobTitle, setCurrentJobTitle] = useState('');
   const [cv, setCv] = useState<any>();
-  const [linkedInUrl, setLinkedInUrl] = useState("");
+  const [linkedInUrl, setLinkedInUrl] = useState('');
+  const [gender, setGender] = useState('');
   const location = useLocation();
-  const { longDescription, position, category } = location.state;
+  const params = useParams();
+  const [longDescription, setLongDescription] = useState('');
+  const [position, setPosition] = useState('');
+  const [category, setCategory] = useState('');
+  const jobCode = params.jobId;
+
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   let headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   } as unknown as AxiosRequestHeaders;
   const submitForm = async () => {
     const formDetails = {
@@ -45,13 +68,14 @@ const Form = () => {
         lastName: lastName,
         email: email,
         phone: phoneNumber,
-        country: country,
+        Gender: gender,
+        country: country.value,
         city: city,
-        nationality: nationality,
+        nationality: nationality.value,
         degree: degree,
         major: major,
         graduationYear: graduationYear.toString(),
-        GBA: gba,
+        GPA: gpa,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
         totalYearsOfExperience: totalExperience,
@@ -59,7 +83,7 @@ const Form = () => {
         currentCompany: currentCompany,
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
-        // CV: cv,
+        jobTitle: position,
       },
     };
 
@@ -72,17 +96,23 @@ const Form = () => {
 
       .then((res: any) => {
         const formData = new FormData();
-        formData.append('ref', 'api::form-submission.form-submission');
-        formData.append('refId', res.data.data.id);
-        formData.append('field', 'CV');
-        formData.append('files', cv);
+        formData.append("ref", "api::form-submission.form-submission");
+        formData.append("refId", res.data.data.id);
+        formData.append("field", "CV");
+        formData.append("files", cv);
 
         axios
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
           .then((res: any) => {
             console.log(res.data);
             navigate('/success');
+          })
+          .catch(() => {
+            showToast('Something Went Wrong');
           });
+      })
+      .catch(() => {
+        showToast('Something Went Wrong');
       });
   };
   const range = (start: number, stop: number, step: number) =>
@@ -92,30 +122,41 @@ const Form = () => {
     );
   const allYears = range(currentYear, currentYear - 30, -1);
 
-  const setValNationality = (val: string) => {
+  const setValNationality = (val: any) => {
     setNationality(val);
   };
 
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
-      .then((res) =>
-        setAllNationality(res.data.data[0].attributes.nationality)
+      .then((res) => {
+        const nationalities = res.data.data[0].attributes.nationality.map(
+        (nationality: String) => ({ value: nationality, label: nationality })
       );
+      setAllNationality(nationalities);
+    })
+      .catch(() => {
+        showToast('Something Went Wrong');
+      });
   };
   const fetchCountry = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/countries`)
-      .then((res) => setAllCountry(res.data.data[0].attributes.country));
-  };
-  const setValCountry = (country: string) => {
-    setCountry(country);
+      .then((res) => {
+        const countries = res.data.data[0].attributes.country.map(
+          (country: String) => ({ value: country, label: country })
+        );
+        setAllCountry(countries);
+      })
+      .catch(() => {
+        showToast('Something Went Wrong');
+      });
   };
 
   const setValGraduationYear = (year: string) => {
     setGraduationYear(year);
   };
-  
+
   const handleFileValidation = (e: any) => {
     const fileSizeInKB = e.target.files[0]?.size / 1024;
     if (fileSizeInKB > 5120) {
@@ -123,13 +164,41 @@ const Form = () => {
       window?.alert("please upload file under 5MB");
     }
   };
- 
+  const handleCountryChange = (country: any) => {
+    setCountry(country)
+  };
   useEffect(() => {
+    console.log(country.value);
+  }, [country])
+  
+  useEffect(() => {
+    if (location.state) {
+      setPosition(location.state.position);
+      setLongDescription(location.state.longDescription);
+      setCategory(location.state.category);
+    } else {
+      axios
+        .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
+        .then((res) => {
+          res.data.data
+            .filter((item: any) => item.attributes.jobCode === jobCode)
+            .map((item: any) => {
+              setPosition(item.attributes.name);
+
+              setLongDescription(item.attributes.longDescription);
+
+              setCategory(item.attributes.category);
+            });
+        })
+        .catch((err) => {
+          showToast('Something Went Wrong');
+        });
+    }
     fetchCountry();
     fetchNationality();
-  }, []);
+  }, [position, longDescription, category]);
   return (
-    <div className="h-screen">
+    <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
         <div className="max-w-screen-md lg:w-[70%] w-[100%]">
           <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
@@ -146,8 +215,13 @@ const Form = () => {
       </div>
       {/* Application form */}
       <div className="bg-gray-100 p-10 mt-10">
-        <form>
-          {/* personal deatils block */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submitForm();
+          }}
+        >
+          {/* Personal Details block */}
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
@@ -157,7 +231,7 @@ const Form = () => {
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow sm:overflow-hidden sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
@@ -191,10 +265,21 @@ const Form = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        placeholder={"Phone"}
-                        type={"number"}
-                        handleChange={(e) => {
-                          setPhoneNumber(e.target.value);
+                        required
+                        placeholder={'Phone'}
+                        type={'text'}
+                        maxLength={10}
+                        value={phoneNumber}
+                        handleChange={handlePhoneNumber}
+                      />
+                    </div>
+                    <div className="col-span-6 sm:col-span-3">
+                      <CheckBoxInput
+                        title="Gender"
+                        name="gender"
+                        options={["Male", "Female"]}
+                        onClick={(e: any) => {
+                          setGender(e.target.value);
                         }}
                       />
                     </div>
@@ -212,24 +297,24 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Residence
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow sm:overflow-hidden sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
-                        choices={allCountry.map(
-                          (country: { name: string; code: string }) =>
-                            country.name
-                        )}
-                        placeholder={"Country of Residence"}
-                        onClick={setValCountry}
-                        isMandatory={false}
+                      <Select
+                        options={allCountry}
+                        isSearchable
+                        onChange={handleCountryChange}
+                        // value={country.value}
+                        placeholder="Country of Residence"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -242,11 +327,20 @@ const Form = () => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
+                      {/* <Dropdown
                         choices={allNationality}
                         placeholder={"Nationality"}
                         onClick={setValNationality}
                         isMandatory={false}
+                      /> */}
+                      <Select
+                        options={allNationality}
+                        isSearchable
+                        onChange={setValNationality}
+                        // value={country.value}
+                        placeholder="Nationality"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                   </div>
@@ -263,13 +357,13 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Educational Information
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow sm:overflow-hidden sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
@@ -308,11 +402,10 @@ const Form = () => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        max={100}
-                        placeholder={"GBA or %"}
-                        type={"number"}
+                        placeholder={'GPA or %'}
+                        type={'number'}
                         handleChange={(e) => {
-                          setGba(e.target.value);
+                          setGpa(e.target.value);
                         }}
                       />
                     </div>
@@ -339,13 +432,13 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Professional Experience
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow sm:overflow-hidden sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
@@ -414,37 +507,36 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0  font-medium leading-6 text-gray-900">
                   Attachments
                 </h3>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="shadow sm:overflow-hidden sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
-                    <InputBox
-              required
-              placeholder={"LinkedIn Profile URL"}
-              type={"url"}
-              handleChange={(e) => {
-                setLinkedInUrl(e.target.value);
-              }}
-            />
+                      <InputBox
+                        placeholder={'LinkedIn Profile URL'}
+                        type={'url'}
+                        handleChange={(e) => {
+                          setLinkedInUrl(e.target.value);
+                        }}
+                      />
                     </div>
-                    <div className="col-span-6 sm:col-span-6">
-                    <InputBox
-              required
-              title="CV Upload as PDF"
-              placeholder={"CV Upload as PDF."}
-              type={"file"}
-              handleChange={(e) => {
-                setCv(e.target.files[0]);
-                handleFileValidation(e);
-              }}
-              accept=".pdf"
-            />
+                    <div className="col-span-6 sm:col-span-6 ">
+                      <InputBox
+                        required
+                        title="CV Upload as PDF"
+                        placeholder={"CV Upload as PDF."}
+                        type={"file"}
+                        handleChange={(e) => {
+                          setCv(e.target.files[0]);
+                          handleFileValidation(e);
+                        }}
+                        accept=".pdf"
+                      />
                     </div>
                   </div>
                 </div>
@@ -453,15 +545,14 @@ const Form = () => {
           </div>
 
           <Button
-            styles="my-10 font-bold mx-auto w-3/12 text-lg"
+            onClick={() => {}}
+            styles="my-10  font-bold mx-auto w-3/12 text-lg"
             buttonType="primary"
-            onClick={() => {
-              submitForm();
-            }}
             title={"Apply"}
           />
         </form>
-    </div>
+        <ToastContainer />
+      </div>
     </div>
   );
 };

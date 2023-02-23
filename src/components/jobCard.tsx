@@ -29,7 +29,7 @@ const jobCard = (props: {
         <div className="-mt-px flex divide-x divide-gray-200">
           <div className="flex w-0 flex-1">
             <Link
-              to={'/form'}
+              to={`/form/${props.jobCode}`}
               state={{
                 position: props.name,
                 longDescription: props.longDescription,
