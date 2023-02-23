@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
-import InputBox from "./InputBox";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Dropdown from "./Dropdown";
-import Select from "react-select";
-import CheckBoxInput from "./CheckBoxInput";
-import Button from "./Button";
-import axios, { AxiosRequestHeaders } from "axios";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from 'react';
+import InputBox from './InputBox';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import Select from 'react-select';
+import CheckBoxInput from './CheckBoxInput';
+import Button from './Button';
+import axios, { AxiosRequestHeaders } from 'axios';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
       data: {
-        title: "",
+        title: '',
         position: toast.POSITION.TOP_CENTER,
       },
     });
@@ -31,14 +30,20 @@ const Form = ({ jobId }: any) => {
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [nationality, setNationality] = useState({'value': String, 'label': String });
+  const [nationality, setNationality] = useState({
+    value: String,
+    label: String,
+  });
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [country, setCountry] = useState({'value': String, 'label': String });
+  const [country, setCountry] = useState({ value: String, label: String });
   const [city, setCity] = useState('');
   const [degree, setDegree] = useState('');
   const [major, setMajor] = useState('');
-  const [graduationYear, setGraduationYear] = useState('');
+  const [graduationYear, setGraduationYear] = useState({
+    value: String,
+    label: String,
+  });
   const [gpa, setGpa] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = useState('');
   const [workExperience, setWorkExperience] = useState('');
@@ -59,7 +64,7 @@ const Form = ({ jobId }: any) => {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   let headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   } as unknown as AxiosRequestHeaders;
   const submitForm = async () => {
     const formDetails = {
@@ -74,7 +79,7 @@ const Form = ({ jobId }: any) => {
         nationality: nationality.value,
         degree: degree,
         major: major,
-        graduationYear: graduationYear.toString(),
+        graduationYear: graduationYear.value,
         GPA: gpa,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
@@ -96,10 +101,10 @@ const Form = ({ jobId }: any) => {
 
       .then((res: any) => {
         const formData = new FormData();
-        formData.append("ref", "api::form-submission.form-submission");
-        formData.append("refId", res.data.data.id);
-        formData.append("field", "CV");
-        formData.append("files", cv);
+        formData.append('ref', 'api::form-submission.form-submission');
+        formData.append('refId', res.data.data.id);
+        formData.append('field', 'CV');
+        formData.append('files', cv);
 
         axios
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
@@ -120,21 +125,28 @@ const Form = ({ jobId }: any) => {
       { length: (stop - start) / step + 1 },
       (_, i) => start + i * step
     );
-  const allYears = range(currentYear, currentYear - 30, -1);
+  const allYearsNumber = range(currentYear, currentYear - 30, -1);
+  const allYears = allYearsNumber.map((item) => ({
+    value: item.toString(),
+    label: item.toString(),
+  }));
 
   const setValNationality = (val: any) => {
     setNationality(val);
   };
 
+  const setValGraduationYear = (val: any) => {
+    setGraduationYear(val);
+  };
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
       .then((res) => {
         const nationalities = res.data.data[0].attributes.nationality.map(
-        (nationality: String) => ({ value: nationality, label: nationality })
-      );
-      setAllNationality(nationalities);
-    })
+          (nationality: String) => ({ value: nationality, label: nationality })
+        );
+        setAllNationality(nationalities);
+      })
       .catch(() => {
         showToast('Something Went Wrong');
       });
@@ -153,24 +165,20 @@ const Form = ({ jobId }: any) => {
       });
   };
 
-  const setValGraduationYear = (year: string) => {
-    setGraduationYear(year);
-  };
-
   const handleFileValidation = (e: any) => {
     const fileSizeInKB = e.target.files[0]?.size / 1024;
     if (fileSizeInKB > 5120) {
       e.target.value = null;
-      window?.alert("please upload file under 5MB");
+      window?.alert('please upload file under 5MB');
     }
   };
   const handleCountryChange = (country: any) => {
-    setCountry(country)
+    setCountry(country);
   };
   useEffect(() => {
     console.log(country.value);
-  }, [country])
-  
+  }, [country]);
+
   useEffect(() => {
     if (location.state) {
       setPosition(location.state.position);
@@ -196,7 +204,7 @@ const Form = ({ jobId }: any) => {
     }
     fetchCountry();
     fetchNationality();
-  }, [position, longDescription, category]);
+  }, [location, position, longDescription, category]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
@@ -237,8 +245,8 @@ const Form = ({ jobId }: any) => {
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
                         required
-                        placeholder={"First Name"}
-                        type={"text"}
+                        placeholder={'First Name'}
+                        type={'text'}
                         handleChange={(e) => {
                           setFirstName(e.target.value);
                         }}
@@ -246,8 +254,8 @@ const Form = ({ jobId }: any) => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        placeholder={"Last Name"}
-                        type={"text"}
+                        placeholder={'Last Name'}
+                        type={'text'}
                         handleChange={(e) => {
                           setLastName(e.target.value);
                         }}
@@ -256,8 +264,8 @@ const Form = ({ jobId }: any) => {
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
                         required
-                        placeholder={"Email"}
-                        type={"email"}
+                        placeholder={'Email'}
+                        type={'email'}
                         handleChange={(e) => {
                           setEmail(e.target.value);
                         }}
@@ -277,7 +285,7 @@ const Form = ({ jobId }: any) => {
                       <CheckBoxInput
                         title="Gender"
                         name="gender"
-                        options={["Male", "Female"]}
+                        options={['Male', 'Female']}
                         onClick={(e: any) => {
                           setGender(e.target.value);
                         }}
@@ -319,20 +327,14 @@ const Form = ({ jobId }: any) => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        placeholder={"City of Residence"}
-                        type={"text"}
+                        placeholder={'City of Residence'}
+                        type={'text'}
                         handleChange={(e) => {
                           setCity(e.target.value);
                         }}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      {/* <Dropdown
-                        choices={allNationality}
-                        placeholder={"Nationality"}
-                        onClick={setValNationality}
-                        isMandatory={false}
-                      /> */}
                       <Select
                         options={allNationality}
                         isSearchable
@@ -371,12 +373,12 @@ const Form = ({ jobId }: any) => {
                         title="Educational Degree"
                         name="educational degree"
                         options={[
-                          "Ph.D.",
+                          'Ph.D.',
                           `Master's degree`,
                           `Bachelor's degree`,
-                          "Diploma",
-                          "High school",
-                          "below high school",
+                          'Diploma',
+                          'High school',
+                          'below high school',
                         ]}
                         onClick={(e: any) => {
                           setDegree(e.target.value);
@@ -385,19 +387,22 @@ const Form = ({ jobId }: any) => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        placeholder={"Major"}
-                        type={"text"}
+                        placeholder={'Major'}
+                        type={'text'}
                         handleChange={(e) => {
                           setMajor(e.target.value);
                         }}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
-                        choices={allYears}
-                        placeholder={"Graduation year"}
-                        onClick={setValGraduationYear}
-                        isMandatory={false}
+                      <Select
+                        options={allYears}
+                        isSearchable
+                        onChange={setValGraduationYear}
+                        // value={country.value}
+                        placeholder="Graduation Year"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -411,8 +416,8 @@ const Form = ({ jobId }: any) => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
-                        placeholder={"Professional Certificate"}
-                        type={"text"}
+                        placeholder={'Professional Certificate'}
+                        type={'text'}
                         handleChange={(e) => {
                           setProfessionalCertificate(e.target.value);
                         }}
@@ -445,19 +450,19 @@ const Form = ({ jobId }: any) => {
                       <CheckBoxInput
                         name="work experience"
                         title="Do you have any work experience?"
-                        options={["Yes", "No"]}
+                        options={['Yes', 'No']}
                         onClick={(e: any) => {
                           setWorkExperience(e.target.value);
                         }}
                       />
                     </div>
-                    {workExperience === "Yes" && (
+                    {workExperience === 'Yes' && (
                       <>
                         <div className="col-span-6 sm:col-span-3">
                           <CheckBoxInput
                             name="total experience"
                             title="Total years of experience?"
-                            options={["0-3", "3-5", "5-10", "10+"]}
+                            options={['0-3', '3-5', '5-10', '10+']}
                             onClick={(e: any) => {
                               setTotalExperience(e.target.value);
                             }}
@@ -467,7 +472,7 @@ const Form = ({ jobId }: any) => {
                           <CheckBoxInput
                             name="total relevant experience"
                             title="Total years of relevant experience?"
-                            options={["0-3", "3-5", "5-10", "10+"]}
+                            options={['0-3', '3-5', '5-10', '10+']}
                             onClick={(e: any) => {
                               setTotalReleventExperience(e.target.value);
                             }}
@@ -475,8 +480,8 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
-                            placeholder={"Current Company?"}
-                            type={"text"}
+                            placeholder={'Current Company?'}
+                            type={'text'}
                             handleChange={(e) => {
                               setcurrentCompany(e.target.value);
                             }}
@@ -484,8 +489,8 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
-                            placeholder={"Current job title?"}
-                            type={"text"}
+                            placeholder={'Current job title?'}
+                            type={'text'}
                             handleChange={(e) => {
                               setCurrentJobTitle(e.target.value);
                             }}
@@ -529,8 +534,8 @@ const Form = ({ jobId }: any) => {
                       <InputBox
                         required
                         title="CV Upload as PDF"
-                        placeholder={"CV Upload as PDF."}
-                        type={"file"}
+                        placeholder={'CV Upload as PDF.'}
+                        type={'file'}
                         handleChange={(e) => {
                           setCv(e.target.files[0]);
                           handleFileValidation(e);
@@ -548,7 +553,7 @@ const Form = ({ jobId }: any) => {
             onClick={() => {}}
             styles="my-10  font-bold mx-auto w-3/12 text-lg"
             buttonType="primary"
-            title={"Apply"}
+            title={'Apply'}
           />
         </form>
         <ToastContainer />
