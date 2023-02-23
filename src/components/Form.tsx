@@ -11,7 +11,7 @@ import rehypeRaw from 'rehype-raw';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const Form = () => {
+const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
       data: {
@@ -158,7 +158,7 @@ const Form = () => {
     fetchNationality();
   }, []);
   return (
-    <div className="h-screen">
+    <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
         <div className="max-w-screen-md lg:w-[70%] w-[100%]">
           <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
@@ -257,7 +257,7 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Residence
                 </h3>
               </div>
@@ -308,7 +308,7 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Educational Information
                 </h3>
               </div>
@@ -383,7 +383,7 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
                   Professional Experience
                 </h3>
               </div>
@@ -458,7 +458,7 @@ const Form = () => {
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                <h3 className="text-lg pt-5 md:pt-0  font-medium leading-6 text-gray-900">
                   Attachments
                 </h3>
               </div>
@@ -476,7 +476,7 @@ const Form = () => {
                         }}
                       />
                     </div>
-                    <div className="col-span-6 sm:col-span-6">
+                    <div className="col-span-6 sm:col-span-6 ">
                       <InputBox
                         required
                         title="CV Upload as PDF"
@@ -497,7 +497,7 @@ const Form = () => {
 
           <Button
             onClick={() => {}}
-            styles="my-10 font-bold mx-auto w-3/12 text-lg"
+            styles="my-10  font-bold mx-auto w-3/12 text-lg"
             buttonType="primary"
             title={'Apply'}
           />
