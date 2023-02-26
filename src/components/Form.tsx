@@ -89,6 +89,7 @@ const Form = ({ jobId }: any) => {
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
         jobTitle: position,
+        jobId: jobCode,
       },
     };
 

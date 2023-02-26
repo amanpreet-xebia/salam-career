@@ -26,7 +26,7 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<JobListing />} />
-            <Route path="/form/:jobId" element={<Form />} />
+            <Route path="/job/:jobId" element={<Form />} />
             <Route path="/success" element={<SuccessfulScreen />} />
           </Routes>
           <Footer />
