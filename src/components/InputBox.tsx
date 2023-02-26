@@ -35,7 +35,7 @@ const InputBox = (props: {
           maxLength={props.maxLength}
           type={props.type}
           placeholder={props.placeholder}
-          className={`w-full p-3 ${props.inputStyles} placeholder:align-text-top outline-none focus:outline-bright-green outline-offset-0 border-roman-silver border-[1px] rounded-lg`}
+          className={`w-full p-3 ${props.inputStyles} placeholder:align-text-top outline-none focus:outline-bright-green focus:border-0 outline-offset-0 border-roman-silver border-[1px] rounded-lg`}
           onChange={props.handleChange}
           accept={props.accept}
         ></input>

@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Dropdown from './Dropdown';
+import Select from 'react-select';
 import CheckBoxInput from './CheckBoxInput';
 import Button from './Button';
 import axios, { AxiosRequestHeaders } from 'axios';
@@ -15,7 +14,7 @@ const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
       data: {
-        title: 'Hello World Again',
+        title: '',
         position: toast.POSITION.TOP_CENTER,
       },
     });
@@ -31,14 +30,20 @@ const Form = ({ jobId }: any) => {
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [nationality, setNationality] = useState('');
+  const [nationality, setNationality] = useState({
+    value: String,
+    label: String,
+  });
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [country, setCountry] = useState('');
+  const [country, setCountry] = useState({ value: String, label: String });
   const [city, setCity] = useState('');
   const [degree, setDegree] = useState('');
   const [major, setMajor] = useState('');
-  const [graduationYear, setGraduationYear] = useState('');
+  const [graduationYear, setGraduationYear] = useState({
+    value: String,
+    label: String,
+  });
   const [gpa, setGpa] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = useState('');
   const [workExperience, setWorkExperience] = useState('');
@@ -69,12 +74,12 @@ const Form = ({ jobId }: any) => {
         email: email,
         phone: phoneNumber,
         Gender: gender,
-        country: country,
+        country: country.value,
         city: city,
-        nationality: nationality,
+        nationality: nationality.value,
         degree: degree,
         major: major,
-        graduationYear: graduationYear.toString(),
+        graduationYear: graduationYear.value,
         GPA: gpa,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
@@ -120,16 +125,28 @@ const Form = ({ jobId }: any) => {
       { length: (stop - start) / step + 1 },
       (_, i) => start + i * step
     );
-  const allYears = range(currentYear, currentYear - 30, -1);
+  const allYearsNumber = range(currentYear, currentYear - 30, -1);
+  const allYears = allYearsNumber.map((item) => ({
+    value: item.toString(),
+    label: item.toString(),
+  }));
 
-  const setValNationality = (val: string) => {
+  const setValNationality = (val: any) => {
     setNationality(val);
   };
 
+  const setValGraduationYear = (val: any) => {
+    setGraduationYear(val);
+  };
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
-      .then((res) => setAllNationality(res.data.data[0].attributes.nationality))
+      .then((res) => {
+        const nationalities = res.data.data[0].attributes.nationality.map(
+          (nationality: String) => ({ value: nationality, label: nationality })
+        );
+        setAllNationality(nationalities);
+      })
       .catch(() => {
         showToast('Something Went Wrong');
       });
@@ -137,17 +154,15 @@ const Form = ({ jobId }: any) => {
   const fetchCountry = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/countries`)
-      .then((res) => setAllCountry(res.data.data[0].attributes.country))
+      .then((res) => {
+        const countries = res.data.data[0].attributes.country.map(
+          (country: String) => ({ value: country, label: country })
+        );
+        setAllCountry(countries);
+      })
       .catch(() => {
         showToast('Something Went Wrong');
       });
-  };
-  const setValCountry = (country: string) => {
-    setCountry(country);
-  };
-
-  const setValGraduationYear = (year: string) => {
-    setGraduationYear(year);
   };
 
   const handleFileValidation = (e: any) => {
@@ -157,6 +172,12 @@ const Form = ({ jobId }: any) => {
       window?.alert('please upload file under 5MB');
     }
   };
+  const handleCountryChange = (country: any) => {
+    setCountry(country);
+  };
+  useEffect(() => {
+    console.log(country.value);
+  }, [country]);
 
   useEffect(() => {
     if (location.state) {
@@ -183,7 +204,7 @@ const Form = ({ jobId }: any) => {
     }
     fetchCountry();
     fetchNationality();
-  }, [position, longDescription, category]);
+  }, [location, position, longDescription, category]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
@@ -208,7 +229,7 @@ const Form = ({ jobId }: any) => {
             submitForm();
           }}
         >
-          {/* personal deatils block */}
+          {/* Personal Details block */}
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
@@ -294,14 +315,14 @@ const Form = ({ jobId }: any) => {
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
-                        choices={allCountry.map(
-                          (country: { name: string; code: string }) =>
-                            country.name
-                        )}
-                        placeholder={'Country of Residence'}
-                        onClick={setValCountry}
-                        isMandatory={false}
+                      <Select
+                        options={allCountry}
+                        isSearchable
+                        onChange={handleCountryChange}
+                        // value={country.value}
+                        placeholder="Country of Residence"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -314,11 +335,14 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
-                        choices={allNationality}
-                        placeholder={'Nationality'}
-                        onClick={setValNationality}
-                        isMandatory={false}
+                      <Select
+                        options={allNationality}
+                        isSearchable
+                        onChange={setValNationality}
+                        // value={country.value}
+                        placeholder="Nationality"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                   </div>
@@ -371,11 +395,14 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <Dropdown
-                        choices={allYears}
-                        placeholder={'Graduation year'}
-                        onClick={setValGraduationYear}
-                        isMandatory={false}
+                      <Select
+                        options={allYears}
+                        isSearchable
+                        onChange={setValGraduationYear}
+                        // value={country.value}
+                        placeholder="Graduation Year"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -529,7 +556,14 @@ const Form = ({ jobId }: any) => {
             title={'Apply'}
           />
         </form>
-        <ToastContainer />
+        <ToastContainer
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          pauseOnHover
+          theme="colored"
+          autoClose={false}
+        />
       </div>
     </div>
   );
