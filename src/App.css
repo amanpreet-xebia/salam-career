@@ -17,35 +17,35 @@ ol {
 .react-select-container .react-select__control{
   background-color: white;
   height: auto;
-  padding: 0.5rem 0.5rem;
+  padding: 6px 0.5rem;
   border: 1px solid rgb(128, 144, 154);
   border-radius: 8px;
   color: black
 }
-react-select-container .react-select__control:hover{
+.react-select-container .react-select__control:hover{
   outline: solid #00b140;
 }
-.select-search-container input:hover{
-  border-color: rgb(128, 144, 154) !important;
-}
-.select-search-container input:focus {
-  outline: solid #00b140;
-}
-.select-search-select{
-  background-color: white;
-  outline: solid #00b140;
-  border: 1px solid;
-}
-.select-search-has-focus .select-search-select{
+.react-select-container .react-select__control.react-select__control--is-focused{
   border-color: #00b140;
+  box-shadow: 0 0 0 1px #00b140;
 }
-ul.select-search-options{
-  margin-left: 0;
+.react-select__value-container{
+  padding: 0;
 }
-ul.select-search-options li button{
-  background-color: white;
-  color: black
+
+
+.react-select-container .react-select__option:hover {
+  background-color: rgba(26, 176, 70, 0.1);
 }
-.select-search-is-highlighted, .select-search-option:not(.select-search-is-selected):hover{
-  background: rgba(26, 176, 70, 0.2);
+.react-select-container .react-select__option{
+  background-color: #fff;
+}
+
+.react-select-container .react-select__option--is-selected {
+  background-color: rgba(26, 176, 70, 0.2);
+  color: #166534;
+  font-weight: bold;
+}
+.react-select-container .react-select__option:focus {
+  background-color: rgba(26, 176, 70, 0.1);
 }
