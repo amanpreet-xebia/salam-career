@@ -556,7 +556,14 @@ const Form = ({ jobId }: any) => {
             title={'Apply'}
           />
         </form>
-        <ToastContainer />
+        <ToastContainer
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          pauseOnHover
+          theme="colored"
+          autoClose={false}
+        />
       </div>
     </div>
   );

@@ -54,7 +54,14 @@ const JobListing = () => {
           ))}
         </ul>
       </div>
-      <ToastContainer />
+      <ToastContainer
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+        autoClose={false}
+      />
     </div>
   );
 };
