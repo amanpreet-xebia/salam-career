@@ -90,7 +90,7 @@ const Form = ({ jobId }: any) => {
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
         jobTitle: position,
-        jobId: jobCode,
+        jobCode: jobCode,
         job: id,
       },
     };
@@ -283,6 +283,7 @@ const Form = ({ jobId }: any) => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <CheckBoxInput
+                        required={true}
                         title="Gender"
                         name="gender"
                         options={['Male', 'Female']}
@@ -370,6 +371,7 @@ const Form = ({ jobId }: any) => {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
                       <CheckBoxInput
+                        required={true}
                         title="Educational Degree"
                         name="educational degree"
                         options={[
@@ -448,6 +450,7 @@ const Form = ({ jobId }: any) => {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
                       <CheckBoxInput
+                        required={true}
                         name="work experience"
                         title="Do you have any work experience?"
                         options={['Yes', 'No']}
@@ -460,6 +463,7 @@ const Form = ({ jobId }: any) => {
                       <>
                         <div className="col-span-6 sm:col-span-3">
                           <CheckBoxInput
+                            required={workExperience === 'Yes' ? true : false}
                             name="total experience"
                             title="Total years of experience?"
                             options={['0-3', '3-5', '5-10', '10+']}
@@ -470,6 +474,7 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <CheckBoxInput
+                            required={workExperience === 'Yes' ? true : false}
                             name="total relevant experience"
                             title="Total years of relevant experience?"
                             options={['0-3', '3-5', '5-10', '10+']}
@@ -480,6 +485,7 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
+                            required={workExperience === 'Yes' ? true : false}
                             placeholder={'Current Company?'}
                             type={'text'}
                             handleChange={(e) => {
@@ -489,6 +495,7 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
+                            required={workExperience === 'Yes' ? true : false}
                             placeholder={'Current job title?'}
                             type={'text'}
                             handleChange={(e) => {

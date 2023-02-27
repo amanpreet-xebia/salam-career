@@ -5,6 +5,7 @@ const CheckBoxInput = (props: {
   options: string[];
   onClick: (e: any) => void;
   name: string;
+  required: boolean;
 }) => {
   return (
     <>
@@ -12,6 +13,7 @@ const CheckBoxInput = (props: {
       {props.options.map((item, index) => (
         <div key={index} className="flex items-center mb-4">
           <input
+            required={props.required}
             id="default-radio-1"
             type="radio"
             onClick={props.onClick}
