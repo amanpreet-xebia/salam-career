@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const jobCard = (props: {
+  id: number;
   name: string;
   description: string;
   jobCode: string;
@@ -31,6 +32,7 @@ const jobCard = (props: {
             <Link
               to={`/job/${props.jobCode}`}
               state={{
+                id: props.id,
                 position: props.name,
                 longDescription: props.longDescription,
                 category: props.category,

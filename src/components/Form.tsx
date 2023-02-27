@@ -44,6 +44,7 @@ const Form = ({ jobId }: any) => {
     value: String,
     label: String,
   });
+  const [id, setId] = useState();
   const [gpa, setGpa] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = useState('');
   const [workExperience, setWorkExperience] = useState('');
@@ -89,7 +90,8 @@ const Form = ({ jobId }: any) => {
         currentJobTitle: currentJobTitle,
         linkedInUrl: linkedInUrl,
         jobTitle: position,
-        jobId: jobCode,
+        jobCode: jobCode,
+        job: id,
       },
     };
 
@@ -176,15 +178,13 @@ const Form = ({ jobId }: any) => {
   const handleCountryChange = (country: any) => {
     setCountry(country);
   };
-  useEffect(() => {
-    console.log(country.value);
-  }, [country]);
 
   useEffect(() => {
     if (location.state) {
       setPosition(location.state.position);
       setLongDescription(location.state.longDescription);
       setCategory(location.state.category);
+      setId(location.state.id);
     } else {
       axios
         .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
@@ -193,10 +193,9 @@ const Form = ({ jobId }: any) => {
             .filter((item: any) => item.attributes.jobCode === jobCode)
             .map((item: any) => {
               setPosition(item.attributes.name);
-
               setLongDescription(item.attributes.longDescription);
-
               setCategory(item.attributes.category);
+              setId(item.attributes.id);
             });
         })
         .catch((err) => {
@@ -205,7 +204,7 @@ const Form = ({ jobId }: any) => {
     }
     fetchCountry();
     fetchNationality();
-  }, [location, position, longDescription, category]);
+  }, [id, location, position, longDescription, category]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
@@ -284,6 +283,7 @@ const Form = ({ jobId }: any) => {
                     </div>
                     <div className="col-span-6 sm:col-span-3">
                       <CheckBoxInput
+                        required={true}
                         title="Gender"
                         name="gender"
                         options={['Male', 'Female']}
@@ -371,6 +371,7 @@ const Form = ({ jobId }: any) => {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
                       <CheckBoxInput
+                        required={true}
                         title="Educational Degree"
                         name="educational degree"
                         options={[
@@ -449,6 +450,7 @@ const Form = ({ jobId }: any) => {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
                       <CheckBoxInput
+                        required={true}
                         name="work experience"
                         title="Do you have any work experience?"
                         options={['Yes', 'No']}
@@ -461,6 +463,7 @@ const Form = ({ jobId }: any) => {
                       <>
                         <div className="col-span-6 sm:col-span-3">
                           <CheckBoxInput
+                            required={workExperience === 'Yes' ? true : false}
                             name="total experience"
                             title="Total years of experience?"
                             options={['0-3', '3-5', '5-10', '10+']}
@@ -471,6 +474,7 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <CheckBoxInput
+                            required={workExperience === 'Yes' ? true : false}
                             name="total relevant experience"
                             title="Total years of relevant experience?"
                             options={['0-3', '3-5', '5-10', '10+']}
@@ -481,6 +485,7 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
+                            required={workExperience === 'Yes' ? true : false}
                             placeholder={'Current Company?'}
                             type={'text'}
                             handleChange={(e) => {
@@ -490,6 +495,7 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
+                            required={workExperience === 'Yes' ? true : false}
                             placeholder={'Current job title?'}
                             type={'text'}
                             handleChange={(e) => {
