@@ -44,6 +44,7 @@ const Form = ({ jobId }: any) => {
     value: String,
     label: String,
   });
+  const [id, setId] = useState();
   const [gpa, setGpa] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = useState('');
   const [workExperience, setWorkExperience] = useState('');
@@ -90,6 +91,7 @@ const Form = ({ jobId }: any) => {
         linkedInUrl: linkedInUrl,
         jobTitle: position,
         jobId: jobCode,
+        job: id,
       },
     };
 
@@ -176,15 +178,13 @@ const Form = ({ jobId }: any) => {
   const handleCountryChange = (country: any) => {
     setCountry(country);
   };
-  useEffect(() => {
-    console.log(country.value);
-  }, [country]);
 
   useEffect(() => {
     if (location.state) {
       setPosition(location.state.position);
       setLongDescription(location.state.longDescription);
       setCategory(location.state.category);
+      setId(location.state.id);
     } else {
       axios
         .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
@@ -193,10 +193,9 @@ const Form = ({ jobId }: any) => {
             .filter((item: any) => item.attributes.jobCode === jobCode)
             .map((item: any) => {
               setPosition(item.attributes.name);
-
               setLongDescription(item.attributes.longDescription);
-
               setCategory(item.attributes.category);
+              setId(item.attributes.id);
             });
         })
         .catch((err) => {
@@ -205,7 +204,7 @@ const Form = ({ jobId }: any) => {
     }
     fetchCountry();
     fetchNationality();
-  }, [location, position, longDescription, category]);
+  }, [id, location, position, longDescription, category]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">

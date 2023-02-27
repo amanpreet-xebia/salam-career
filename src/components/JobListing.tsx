@@ -50,6 +50,7 @@ const JobListing = () => {
             jobs.map((item: any) => (
               <JobCard
                 key={item.id}
+                id={item.id}
                 category={item.attributes.category}
                 description={item.attributes.description}
                 jobCode={item.attributes.jobCode}
