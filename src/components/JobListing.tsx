@@ -42,16 +42,22 @@ const JobListing = () => {
           role="list"
           className="list-none grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {jobs.map((item: any) => (
-            <JobCard
-              key={item.id}
-              category={item.attributes.category}
-              description={item.attributes.description}
-              jobCode={item.attributes.jobCode}
-              name={item.attributes.name}
-              longDescription={item.attributes.longDescription}
-            />
-          ))}
+          {jobs.length === 0 ? (
+            <div className="text-salamgreen">
+              No open positions at this time
+            </div>
+          ) : (
+            jobs.map((item: any) => (
+              <JobCard
+                key={item.id}
+                category={item.attributes.category}
+                description={item.attributes.description}
+                jobCode={item.attributes.jobCode}
+                name={item.attributes.name}
+                longDescription={item.attributes.longDescription}
+              />
+            ))
+          )}
         </ul>
       </div>
       <ToastContainer
