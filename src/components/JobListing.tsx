@@ -34,17 +34,17 @@ const JobListing = () => {
         <span>Apply for Jobs at Salam</span>
       </div>
       <div
-        className={
-          'mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 bg-gray-100 py-8 rounded-xl'
-        }
+        className={'mx-auto max-w-7xl px-2 lg:px-8 bg-gray-100 py-8 rounded-xl'}
       >
         <ul
           role="list"
-          className="list-none grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          className="relative m-0 min-h-[30px] list-none grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {jobs.length === 0 ? (
-            <div className="text-salamgreen">
-              No open positions at this time
+            <div className="w-full block text-center absolute">
+              <h3 className="text-gray-800 font-bold text-2xl">
+                No open positions at this time
+              </h3>
             </div>
           ) : (
             jobs.map((item: any) => (
