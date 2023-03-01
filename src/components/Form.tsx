@@ -468,7 +468,7 @@ const Form = ({ jobId }: any) => {
                           <CheckBoxInput
                             required={workExperience === 'Yes' ? true : false}
                             name="total relevant experience"
-                            title="Total years of relevant experience?"
+                            title="Total years of Job relevant experience?"
                             options={['0-3', '3-5', '5-10', '10+']}
                             onClick={(e: any) => {
                               setTotalReleventExperience(e.target.value);
