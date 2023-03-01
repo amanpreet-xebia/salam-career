@@ -9,7 +9,8 @@ import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
@@ -18,12 +19,6 @@ const Form = ({ jobId }: any) => {
         position: toast.POSITION.TOP_CENTER,
       },
     });
-  };
-  const handlePhoneNumber = (e: any) => {
-    const regex = /^[0-9\b]+$/;
-    if (e.target.value === '' || regex.test(e.target.value)) {
-      setPhoneNumber(e.target.value);
-    }
   };
 
   const [allNationality, setAllNationality] = useState([]);
@@ -272,13 +267,10 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        required
-                        placeholder={'Phone'}
-                        type={'text'}
-                        maxLength={10}
+                      <PhoneInput
+                        country={'sa'}
                         value={phoneNumber}
-                        handleChange={handlePhoneNumber}
+                        onChange={(phone) => setPhoneNumber(phone)}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
