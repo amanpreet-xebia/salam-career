@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CheckBoxInput = (props: {
+const RadioInput = (props: {
   title: string;
   options: string[];
   onClick: (e: any) => void;
@@ -15,7 +15,7 @@ const CheckBoxInput = (props: {
           <input
             required={props.required}
             id="default-radio-1"
-            type="checkbox"
+            type="radio"
             onClick={props.onClick}
             value={item}
             name={props.name}
@@ -33,4 +33,4 @@ const CheckBoxInput = (props: {
   );
 };
 
-export default CheckBoxInput;
+export default RadioInput;

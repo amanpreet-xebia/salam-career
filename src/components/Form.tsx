@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select';
-import CheckBoxInput from './CheckBoxInput';
+import RadioInput from './RadioInput';
 import Button from './Button';
 import axios, { AxiosRequestHeaders } from 'axios';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CheckBoxInput from './CheckBoxInput';
+import { IoMdAddCircle } from 'react-icons/io';
 
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
@@ -25,7 +27,11 @@ const Form = ({ jobId }: any) => {
       setPhoneNumber(e.target.value);
     }
   };
-
+  let professCert: string[] = [''];
+  let index = 0;
+  useEffect(() => {
+    console.log(professCert);
+  }, [professCert]);
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
@@ -167,6 +173,49 @@ const Form = ({ jobId }: any) => {
         showToast('Something Went Wrong');
       });
   };
+  const handleCertInsertion = (cert: string) => {
+    console.log(cert);
+    console.log(professionalCertificate);
+    // console.log();
+    debugger;
+    professCert.push(cert);
+    setProfessionalCertificate('');
+  };
+  const EducationInformation = () => {
+    return (
+      <>
+        <div className="col-span-6 sm:col-span-3">
+          <InputBox
+            placeholder={'Major'}
+            type={'text'}
+            handleChange={(e) => {
+              setMajor(e.target.value);
+            }}
+          />
+        </div>
+        <div className="col-span-6 sm:col-span-3">
+          <Select
+            options={allYears}
+            isSearchable
+            onChange={setValGraduationYear}
+            // value={country.value}
+            placeholder="Graduation Year"
+            className="react-select-container"
+            classNamePrefix="react-select"
+          />
+        </div>
+        <div className="col-span-6 sm:col-span-3">
+          <InputBox
+            placeholder={'GPA or %'}
+            type={'number'}
+            handleChange={(e) => {
+              setGpa(e.target.value);
+            }}
+          />
+        </div>
+      </>
+    );
+  };
 
   const handleFileValidation = (e: any) => {
     const fileSizeInKB = e.target.files[0]?.size / 1024;
@@ -282,7 +331,7 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <CheckBoxInput
+                      <RadioInput
                         required={true}
                         title="Gender"
                         name="gender"
@@ -383,49 +432,62 @@ const Form = ({ jobId }: any) => {
                           'below high school',
                         ]}
                         onClick={(e: any) => {
-                          setDegree(e.target.value);
+                          console.log(e);
+
+                          setDegree(e.target);
                         }}
                       />
                     </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        placeholder={'Major'}
-                        type={'text'}
-                        handleChange={(e) => {
-                          setMajor(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <Select
-                        options={allYears}
-                        isSearchable
-                        onChange={setValGraduationYear}
-                        // value={country.value}
-                        placeholder="Graduation Year"
-                        className="react-select-container"
-                        classNamePrefix="react-select"
-                      />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        placeholder={'GPA or %'}
-                        type={'number'}
-                        handleChange={(e) => {
-                          setGpa(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        placeholder={'Professional Certificate'}
-                        type={'text'}
-                        handleChange={(e) => {
-                          setProfessionalCertificate(e.target.value);
-                        }}
-                      />
-                    </div>
+                    {EducationInformation()}
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:block" aria-hidden="true">
+            <div className="py-5">
+              <div className="border-t border-gray-200"></div>
+            </div>
+          </div>
+          {/* Professional Certificates */}
+          <div className="md:grid md:grid-cols-3 md:gap-6">
+            <div className="md:col-span-1">
+              <div className="px-4 sm:px-0">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
+                  Professional Certificates
+                </h3>
+              </div>
+            </div>
+            <div className="mt-5 md:col-span-2 md:mt-0">
+              <div className="shadow sm:rounded-md">
+                <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
+                  {professCert.map(() => (
+                    <>
+                      <div className="grid grid-cols-6 gap-6">
+                        <div className="col-span-6 sm:col-span-3">
+                          <InputBox
+                            placeholder={'Professional Certificate'}
+                            type={'text'}
+                            handleChange={(e) => {
+                              // professCert.push(e.target.value)
+                              setProfessionalCertificate(e.target.value);
+                            }}
+                          />
+                        </div>
+                        <div className="flex my-auto">
+                          <IoMdAddCircle
+                            onClick={() =>
+                              handleCertInsertion(professionalCertificate)
+                            }
+                            size={40}
+                            color={
+                              professionalCertificate === '' ? 'grey' : 'green'
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ))}
                 </div>
               </div>
             </div>
@@ -449,7 +511,7 @@ const Form = ({ jobId }: any) => {
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
-                      <CheckBoxInput
+                      <RadioInput
                         required={true}
                         name="work experience"
                         title="Do you have any work experience?"
@@ -462,7 +524,7 @@ const Form = ({ jobId }: any) => {
                     {workExperience === 'Yes' && (
                       <>
                         <div className="col-span-6 sm:col-span-3">
-                          <CheckBoxInput
+                          <RadioInput
                             required={workExperience === 'Yes' ? true : false}
                             name="total experience"
                             title="Total years of experience?"
@@ -473,7 +535,7 @@ const Form = ({ jobId }: any) => {
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
-                          <CheckBoxInput
+                          <RadioInput
                             required={workExperience === 'Yes' ? true : false}
                             name="total relevant experience"
                             title="Total years of relevant experience?"
