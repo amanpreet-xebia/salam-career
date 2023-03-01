@@ -11,7 +11,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CheckBoxInput from "./CheckBoxInput";
 import { IoMdAddCircle, IoMdTrash } from "react-icons/io";
-
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
@@ -21,14 +22,6 @@ const Form = ({ jobId }: any) => {
       },
     });
   };
-  const handlePhoneNumber = (e: any) => {
-    const regex = /^[0-9\b]+$/;
-    if (e.target.value === "" || regex.test(e.target.value)) {
-      setPhoneNumber(e.target.value);
-    }
-  };
-  // let professCert: string[] = [];
-  let index = 0;
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState("");
@@ -325,13 +318,10 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        required
-                        placeholder={"Phone"}
-                        type={"text"}
-                        maxLength={10}
+                      <PhoneInput
+                        country={'sa'}
                         value={phoneNumber}
-                        handleChange={handlePhoneNumber}
+                        onChange={(phone) => setPhoneNumber(phone)}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
@@ -564,8 +554,8 @@ const Form = ({ jobId }: any) => {
                           <RadioInput
                             required={workExperience === "Yes" ? true : false}
                             name="total relevant experience"
-                            title="Total years of relevant experience?"
-                            options={["0-3", "3-5", "5-10", "10+"]}
+                            title="Total years of Job relevant experience?"
+                            options={['0-3', '3-5', '5-10', '10+']}
                             onClick={(e: any) => {
                               setTotalReleventExperience(e.target.value);
                             }}
