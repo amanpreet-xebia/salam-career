@@ -78,7 +78,7 @@ const Form = ({ jobId }: any) => {
         country: country.value,
         city: city,
         nationality: nationality.value,
-        // degree: degree,
+        degree: ['Ph.D', "Master's degree"],
         major: major,
         graduationYear: graduationYear.value,
         GPA: gpa,
@@ -92,7 +92,6 @@ const Form = ({ jobId }: any) => {
         jobTitle: position,
         jobCode: jobCode,
         job: id,
-        profDegree: ['Ph.d', "Master's degree"],
       },
     };
     axios
