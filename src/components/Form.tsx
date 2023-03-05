@@ -35,14 +35,22 @@ const Form = ({ jobId }: any) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({ value: String, label: String });
   const [city, setCity] = useState('');
-  const [degree, setDegree] = useState('');
-  const [major, setMajor] = useState('');
-  const [graduationYear, setGraduationYear] = useState({
-    value: String,
-    label: String,
-  });
+  const [educationInformation, setEducationInformation] = useState<
+    {
+      degree: string;
+      major: string;
+      GPA: string;
+      graduationYear: string;
+    }[]
+  >([
+    {
+      degree: '',
+      major: '',
+      GPA: '',
+      graduationYear: '',
+    },
+  ]);
   const [id, setId] = useState();
-  const [gpa, setGpa] = useState('');
   const [certificate, setCertificate] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = React.useState<
     string[]
@@ -60,14 +68,13 @@ const Form = ({ jobId }: any) => {
   const [position, setPosition] = useState('');
   const [category, setCategory] = useState('');
   const jobCode = params.jobId;
-  console.log(professionalCertificate.toString);
 
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
   let headers = {
     'Content-Type': 'application/json',
   } as unknown as AxiosRequestHeaders;
   const submitForm = async () => {
+    educationInformation.shift();
     const formDetails = {
       data: {
         firstName: firstName,
@@ -78,10 +85,7 @@ const Form = ({ jobId }: any) => {
         country: country.value,
         city: city,
         nationality: nationality.value,
-        degree: ['Ph.D', "Master's degree"],
-        major: major,
-        graduationYear: graduationYear.value,
-        GPA: gpa,
+        educationInformation: educationInformation,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
         totalYearsOfExperience: totalExperience,
@@ -111,22 +115,33 @@ const Form = ({ jobId }: any) => {
         axios
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
           .then((res: any) => {
-            console.log(res.data);
-            navigate('/success');
+            axios
+              .get(
+                `${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings?populate=*`
+              )
+              .then((res) => {
+                axios
+                  .put(
+                    `${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings/${id}`,
+                    {
+                      data: {
+                        applicationCount: res.data.data.filter(
+                          (item: any) => item.id === id
+                        )[0].attributes.candidates.data.length,
+                      },
+                    }
+                  )
+                  .then(() => {
+                    navigate('/success');
+                  })
+                  .catch(() => {
+                    showToast('Something Went Wrong');
+                  });
+              })
+              .catch(() => {
+                showToast('Something Went Wrong');
+              });
           })
-          .catch(() => {
-            showToast('Something Went Wrong');
-          });
-        const update = {
-          data: {
-            applicationCount: count + 1,
-          },
-        };
-        axios
-          .put(
-            `${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings/${id}`,
-            update
-          )
           .catch(() => {
             showToast('Something Went Wrong');
           });
@@ -135,24 +150,11 @@ const Form = ({ jobId }: any) => {
         showToast('Something Went Wrong');
       });
   };
-  const range = (start: number, stop: number, step: number) =>
-    Array.from(
-      { length: (stop - start) / step + 1 },
-      (_, i) => start + i * step
-    );
-  const allYearsNumber = range(currentYear, currentYear - 30, -1);
-  const allYears = allYearsNumber.map((item) => ({
-    value: item.toString(),
-    label: item.toString(),
-  }));
 
   const setValNationality = (val: any) => {
     setNationality(val);
   };
 
-  const setValGraduationYear = (val: any) => {
-    setGraduationYear(val);
-  };
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
@@ -191,41 +193,6 @@ const Form = ({ jobId }: any) => {
     });
     setProfessionalCertificate(newCertificates);
   };
-  const EducationInformation = () => {
-    return (
-      <>
-        <div className="col-span-6 sm:col-span-3">
-          <InputBox
-            placeholder={'Major'}
-            type={'text'}
-            handleChange={(e) => {
-              setMajor(e.target.value);
-            }}
-          />
-        </div>
-        <div className="col-span-6 sm:col-span-3">
-          <Select
-            options={allYears}
-            isSearchable
-            onChange={setValGraduationYear}
-            // value={country.value}
-            placeholder="Graduation Year"
-            className="react-select-container"
-            classNamePrefix="react-select"
-          />
-        </div>
-        <div className="col-span-6 sm:col-span-3">
-          <InputBox
-            placeholder={'GPA or %'}
-            type={'number'}
-            handleChange={(e) => {
-              setGpa(e.target.value);
-            }}
-          />
-        </div>
-      </>
-    );
-  };
 
   const handleFileValidation = (e: any) => {
     const fileSizeInKB = e.target.files[0]?.size / 1024;
@@ -239,22 +206,14 @@ const Form = ({ jobId }: any) => {
   };
 
   useEffect(() => {
-    console.log(id);
+    console.log('yo' + JSON.stringify(educationInformation));
 
-    // if (location.state) {
-    //   setPosition(location.state.position);
-    //   setLongDescription(location.state.longDescription);
-    //   setCategory(location.state.category);
-    //   setId(location.state.id);
-    // } else {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
       .then((res) => {
         res.data.data
           .filter((item: any) => item.attributes.jobCode === jobCode)
           .map((item: any) => {
-            console.log(item);
-
             setPosition(item.attributes.name);
             setLongDescription(item.attributes.longDescription);
             setCategory(item.attributes.category);
@@ -272,7 +231,7 @@ const Form = ({ jobId }: any) => {
     // }
     fetchCountry();
     fetchNationality();
-  }, [id, count, position, longDescription, category]);
+  }, [id, count, position, longDescription, category, educationInformation]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
@@ -447,14 +406,11 @@ const Form = ({ jobId }: any) => {
                           'High school',
                           'below high school',
                         ]}
-                        onClick={(e: any) => {
-                          console.log(e);
-
-                          setDegree(e.target);
-                        }}
+                        value={educationInformation}
+                        setValue={setEducationInformation}
                       />
                     </div>
-                    {EducationInformation()}
+                    {/* {EducationInformation()} */}
                   </div>
                 </div>
               </div>
