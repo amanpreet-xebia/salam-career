@@ -1,33 +1,66 @@
-import React from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useState } from 'react';
+import EducationComponent from './EducationComponent';
 
 const CheckBoxInput = (props: {
   title: string;
   options: string[];
-  onClick: (e: any) => void;
   name: string;
   required: boolean;
+  value:
+    | { degree: string; major: string; GPA: string; graduationYear: string }[];
+  setValue: React.Dispatch<
+    React.SetStateAction<
+      | {
+          degree: string;
+          major: string;
+          GPA: string;
+          graduationYear: string;
+        }[]
+    >
+  >;
 }) => {
+  const currentYear = new Date().getFullYear();
+  const range = (start: number, stop: number, step: number) =>
+    Array.from(
+      { length: (stop - start) / step + 1 },
+      (_, i) => start + i * step
+    );
+  const allYearsNumber = range(currentYear, currentYear - 30, -1);
+  const allYears = allYearsNumber.map((item) => ({
+    value: item.toString(),
+    label: item.toString(),
+  }));
+
+  const createIndex = (degree: string) => {
+    props.setValue([
+      ...props.value,
+      { degree: degree, GPA: '', graduationYear: '', major: '' },
+    ]);
+  };
+  const removeObj = (degree: string) => {
+    props.setValue(
+      props.value.filter((item) => {
+        return item.degree !== degree;
+      })
+    );
+    console.log(props.value);
+  };
+
   return (
     <>
       <div className="text-salam-blue font-semibold py-2">{props.title}</div>
       {props.options.map((item, index) => (
-        <div key={index} className="flex items-center mb-4">
-          <input
-            required={props.required}
-            id="default-radio-1"
-            type="checkbox"
-            onClick={props.onClick}
-            value={item}
-            name={props.name}
-            className="w-4 h-4 text-roman-silver bg-gray-100 border-gray-300 "
-          />
-          <label
-            about={props.name}
-            className="ml-2 text-sm font-medium text-roman-silver"
-          >
-            {item}
-          </label>
-        </div>
+        <EducationComponent
+          setValue={props.setValue}
+          value={props.value}
+          key={index}
+          item={item}
+          length={props.value.length}
+          allYears={allYears}
+          removeObj={removeObj}
+          createIndex={createIndex}
+        />
       ))}
     </>
   );
