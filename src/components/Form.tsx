@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import InputBox from './InputBox';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Select from 'react-select';
-import CheckBoxInput from './CheckBoxInput';
+import RadioInput from './RadioInput';
 import Button from './Button';
 import axios, { AxiosRequestHeaders } from 'axios';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import CheckBoxInput from './CheckBoxInput';
+import { IoMdAddCircle, IoMdTrash } from 'react-icons/io';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { degree } from '../constants/educatonData';
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
@@ -19,13 +23,7 @@ const Form = ({ jobId }: any) => {
       },
     });
   };
-  const handlePhoneNumber = (e: any) => {
-    const regex = /^[0-9\b]+$/;
-    if (e.target.value === '' || regex.test(e.target.value)) {
-      setPhoneNumber(e.target.value);
-    }
-  };
-
+  const [count, setCount] = useState<number>(0);
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
@@ -38,15 +36,19 @@ const Form = ({ jobId }: any) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [country, setCountry] = useState({ value: String, label: String });
   const [city, setCity] = useState('');
-  const [degree, setDegree] = useState('');
-  const [major, setMajor] = useState('');
-  const [graduationYear, setGraduationYear] = useState({
-    value: String,
-    label: String,
-  });
+  const [educationInformation, setEducationInformation] = useState<
+    {
+      degree: string;
+      major: string;
+      GPA: string;
+      graduationYear: string;
+    }[]
+  >();
   const [id, setId] = useState();
-  const [gpa, setGpa] = useState('');
-  const [professionalCertificate, setProfessionalCertificate] = useState('');
+  const [certificate, setCertificate] = useState('');
+  const [professionalCertificate, setProfessionalCertificate] = React.useState<
+    string[]
+  >([]);
   const [workExperience, setWorkExperience] = useState('');
   const [totalExperience, setTotalExperience] = useState('');
   const [totalReleventExperience, setTotalReleventExperience] = useState('');
@@ -55,7 +57,6 @@ const Form = ({ jobId }: any) => {
   const [cv, setCv] = useState<any>();
   const [linkedInUrl, setLinkedInUrl] = useState('');
   const [gender, setGender] = useState('');
-  const location = useLocation();
   const params = useParams();
   const [longDescription, setLongDescription] = useState('');
   const [position, setPosition] = useState('');
@@ -63,7 +64,6 @@ const Form = ({ jobId }: any) => {
   const jobCode = params.jobId;
 
   const navigate = useNavigate();
-  const currentYear = new Date().getFullYear();
   let headers = {
     'Content-Type': 'application/json',
   } as unknown as AxiosRequestHeaders;
@@ -78,10 +78,7 @@ const Form = ({ jobId }: any) => {
         country: country.value,
         city: city,
         nationality: nationality.value,
-        degree: degree,
-        major: major,
-        graduationYear: graduationYear.value,
-        GPA: gpa,
+        educationInformation: educationInformation,
         professionalCertificate: professionalCertificate,
         isWorkExperience: workExperience,
         totalYearsOfExperience: totalExperience,
@@ -94,7 +91,6 @@ const Form = ({ jobId }: any) => {
         job: id,
       },
     };
-
     axios
       .post(
         `${process.env.REACT_APP_STRAPI_URL}api/form-submissions`,
@@ -112,8 +108,32 @@ const Form = ({ jobId }: any) => {
         axios
           .post(`${process.env.REACT_APP_STRAPI_URL}api/upload`, formData)
           .then((res: any) => {
-            console.log(res.data);
-            navigate('/success');
+            axios
+              .get(
+                `${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings?populate=*`
+              )
+              .then((res) => {
+                axios
+                  .put(
+                    `${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings/${id}`,
+                    {
+                      data: {
+                        applicationCount: res.data.data.filter(
+                          (item: any) => item.id === id
+                        )[0].attributes.candidates.data.length,
+                      },
+                    }
+                  )
+                  .then(() => {
+                    navigate('/success');
+                  })
+                  .catch(() => {
+                    showToast('Something Went Wrong');
+                  });
+              })
+              .catch(() => {
+                showToast('Something Went Wrong');
+              });
           })
           .catch(() => {
             showToast('Something Went Wrong');
@@ -123,24 +143,11 @@ const Form = ({ jobId }: any) => {
         showToast('Something Went Wrong');
       });
   };
-  const range = (start: number, stop: number, step: number) =>
-    Array.from(
-      { length: (stop - start) / step + 1 },
-      (_, i) => start + i * step
-    );
-  const allYearsNumber = range(currentYear, currentYear - 30, -1);
-  const allYears = allYearsNumber.map((item) => ({
-    value: item.toString(),
-    label: item.toString(),
-  }));
 
   const setValNationality = (val: any) => {
     setNationality(val);
   };
 
-  const setValGraduationYear = (val: any) => {
-    setGraduationYear(val);
-  };
   const fetchNationality = async () => {
     axios
       .get(`${process.env.REACT_APP_STRAPI_URL}api/nationalities`)
@@ -167,6 +174,18 @@ const Form = ({ jobId }: any) => {
         showToast('Something Went Wrong');
       });
   };
+  const addCertificate = () => {
+    if (certificate !== '' && professionalCertificate.length <= 10) {
+      setProfessionalCertificate([...professionalCertificate, certificate]);
+      setCertificate('');
+    }
+  };
+  const deleteCertificate = (cert: string) => {
+    const newCertificates = professionalCertificate.filter((certificate) => {
+      return certificate !== cert;
+    });
+    setProfessionalCertificate(newCertificates);
+  };
 
   const handleFileValidation = (e: any) => {
     const fileSizeInKB = e.target.files[0]?.size / 1024;
@@ -180,31 +199,32 @@ const Form = ({ jobId }: any) => {
   };
 
   useEffect(() => {
-    if (location.state) {
-      setPosition(location.state.position);
-      setLongDescription(location.state.longDescription);
-      setCategory(location.state.category);
-      setId(location.state.id);
-    } else {
-      axios
-        .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
-        .then((res) => {
-          res.data.data
-            .filter((item: any) => item.attributes.jobCode === jobCode)
-            .map((item: any) => {
-              setPosition(item.attributes.name);
-              setLongDescription(item.attributes.longDescription);
-              setCategory(item.attributes.category);
-              setId(item.attributes.id);
-            });
-        })
-        .catch((err) => {
-          showToast('Something Went Wrong');
-        });
-    }
+    console.log('yo' + JSON.stringify(educationInformation));
+
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/salam-job-listings`)
+      .then((res) => {
+        res.data.data
+          .filter((item: any) => item.attributes.jobCode === jobCode)
+          .map((item: any) => {
+            setPosition(item.attributes.name);
+            setLongDescription(item.attributes.longDescription);
+            setCategory(item.attributes.category);
+            setId(item.id);
+            if (item.attributes.applicationCount === null) {
+              setCount(0);
+            } else {
+              setCount(item.attributes.applicationCount);
+            }
+          });
+      })
+      .catch((err) => {
+        showToast('Something Went Wrong');
+      });
+    // }
     fetchCountry();
     fetchNationality();
-  }, [id, location, position, longDescription, category]);
+  }, [id, count, position, longDescription, category, educationInformation]);
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
@@ -272,17 +292,14 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        required
-                        placeholder={'Phone'}
-                        type={'text'}
-                        maxLength={10}
+                      <PhoneInput
+                        country={'sa'}
                         value={phoneNumber}
-                        handleChange={handlePhoneNumber}
+                        onChange={(phone) => setPhoneNumber(phone)}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <CheckBoxInput
+                      <RadioInput
                         required={true}
                         title="Gender"
                         name="gender"
@@ -374,55 +391,80 @@ const Form = ({ jobId }: any) => {
                         required={true}
                         title="Educational Degree"
                         name="educational degree"
-                        options={[
-                          'Ph.D.',
-                          `Master's degree`,
-                          `Bachelor's degree`,
-                          'Diploma',
-                          'High school',
-                          'below high school',
-                        ]}
-                        onClick={(e: any) => {
-                          setDegree(e.target.value);
-                        }}
+                        options={degree}
+                        value={educationInformation}
+                        setValue={setEducationInformation}
                       />
                     </div>
+                    {/* {EducationInformation()} */}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:block" aria-hidden="true">
+            <div className="py-5">
+              <div className="border-t border-gray-200"></div>
+            </div>
+          </div>
+          {/* Professional Certificates */}
+          <div className="md:grid md:grid-cols-3 md:gap-6">
+            <div className="md:col-span-1">
+              <div className="px-4 sm:px-0">
+                <h3 className="text-lg pt-5 md:pt-0 font-medium leading-6 text-gray-900">
+                  Professional Certificates
+                </h3>
+              </div>
+            </div>
+            <div className="mt-5 md:col-span-2 md:mt-0">
+              <div className="shadow sm:rounded-md">
+                <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
+                  <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        placeholder={'Major'}
-                        type={'text'}
-                        handleChange={(e) => {
-                          setMajor(e.target.value);
-                        }}
-                      />
+                      {professionalCertificate.length > 0 ? (
+                        <ul className="m-0">
+                          {professionalCertificate.map((certificate, index) => (
+                            <li
+                              key={index}
+                              className="flex first:border-0 bg-salam-background center min-w-full justify-between px-2 py-2 box-border border-t border-roman-silver"
+                            >
+                              <p>{certificate}</p>
+                              <IoMdTrash
+                                onClick={() => deleteCertificate(certificate)}
+                                size={20}
+                                color={'red'}
+                                className="min-w-[20px]"
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>add your professional certificates</p>
+                      )}
                     </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <Select
-                        options={allYears}
-                        isSearchable
-                        onChange={setValGraduationYear}
-                        // value={country.value}
-                        placeholder="Graduation Year"
-                        className="react-select-container"
-                        classNamePrefix="react-select"
-                      />
-                    </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <InputBox
-                        placeholder={'GPA or %'}
-                        type={'number'}
-                        handleChange={(e) => {
-                          setGpa(e.target.value);
-                        }}
-                      />
-                    </div>
+                  </div>
+                  <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
                       <InputBox
                         placeholder={'Professional Certificate'}
                         type={'text'}
                         handleChange={(e) => {
-                          setProfessionalCertificate(e.target.value);
+                          // professCert.push(e.target.value)
+                          setCertificate(e.target.value);
                         }}
+                        value={certificate}
+                      />
+                    </div>
+                    <div className="flex my-auto">
+                      <IoMdAddCircle
+                        onClick={addCertificate}
+                        size={40}
+                        color={
+                          certificate === '' &&
+                          professionalCertificate.length <= 10
+                            ? 'grey'
+                            : 'green'
+                        }
                       />
                     </div>
                   </div>
@@ -449,7 +491,7 @@ const Form = ({ jobId }: any) => {
                 <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-6">
-                      <CheckBoxInput
+                      <RadioInput
                         required={true}
                         name="work experience"
                         title="Do you have any work experience?"
@@ -462,7 +504,7 @@ const Form = ({ jobId }: any) => {
                     {workExperience === 'Yes' && (
                       <>
                         <div className="col-span-6 sm:col-span-3">
-                          <CheckBoxInput
+                          <RadioInput
                             required={workExperience === 'Yes' ? true : false}
                             name="total experience"
                             title="Total years of experience?"
@@ -473,10 +515,10 @@ const Form = ({ jobId }: any) => {
                           />
                         </div>
                         <div className="col-span-6 sm:col-span-3">
-                          <CheckBoxInput
+                          <RadioInput
                             required={workExperience === 'Yes' ? true : false}
                             name="total relevant experience"
-                            title="Total years of relevant experience?"
+                            title="Total years of Job relevant experience?"
                             options={['0-3', '3-5', '5-10', '10+']}
                             onClick={(e: any) => {
                               setTotalReleventExperience(e.target.value);

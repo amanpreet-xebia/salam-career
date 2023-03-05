@@ -14,30 +14,30 @@ ol {
 .select-search-container {
   width: 100%;
 }
-.react-select-container .react-select__control{
+.react-select-container .react-select__control {
   background-color: white;
   height: auto;
   padding: 6px 0.5rem;
   border: 1px solid rgb(128, 144, 154);
   border-radius: 8px;
-  color: black
+  color: black;
 }
-.react-select-container .react-select__control:hover{
+.react-select-container .react-select__control:hover {
   outline: solid #00b140;
 }
-.react-select-container .react-select__control.react-select__control--is-focused{
+.react-select-container
+  .react-select__control.react-select__control--is-focused {
   border-color: #00b140;
   box-shadow: 0 0 0 1px #00b140;
 }
-.react-select__value-container{
+.react-select__value-container {
   padding: 0;
 }
-
 
 .react-select-container .react-select__option:hover {
   background-color: rgba(26, 176, 70, 0.1);
 }
-.react-select-container .react-select__option{
+.react-select-container .react-select__option {
   background-color: #fff;
 }
 
@@ -48,4 +48,32 @@ ol {
 }
 .react-select-container .react-select__option:focus {
   background-color: rgba(26, 176, 70, 0.1);
+}
+.react-tel-input .form-control {
+  background: #ffffff;
+  border: 1px solid #80909a;
+  border-radius: 8px;
+
+  height: 50px;
+  width: 100%;
+  outline: none;
+}
+.react-tel-input .flag-dropdown {
+  background-color: #fff;
+  border: 1px solid #80909a;
+  border-radius: 8px 0 0 8px;
+}
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background-color: transparent;
+}
+
+.react-tel-input .flag-dropdown.open .selected-flag {
+  background: transparent;
+  border-radius: 8px 0 0 8px;
+}
+.react-tel-input .flag-dropdown.open {
+  z-index: 2;
+  background: #fff;
+  border-radius: 8px 0 0 8px;
 }
