@@ -8,9 +8,12 @@ import Navbar from './components/Navbar';
 import SuccessfulScreen from './components/SuccessfulScreen';
 import { translations } from './constants';
 import './App.css';
+import ScrollToTop from './ScrollToTop';
+
 function App() {
   const [locale, setLocale] = useState('en');
   const translation: any = translations;
+
   return (
     <div dir="ltr" className="">
       <Router basename="/recruitment">
@@ -24,6 +27,7 @@ function App() {
           }}
         >
           <Navbar />
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<JobListing />} />
             <Route path="/job/:jobId" element={<Form />} />
