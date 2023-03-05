@@ -6,7 +6,7 @@ const EducationComponent = (props: {
   item: string;
   allYears: { value: string; label: string }[];
   removeObj: (val: string) => void;
-  length: number;
+  length: number | undefined;
   createIndex: (degree: string) => void;
   setValue: React.Dispatch<
     React.SetStateAction<
@@ -16,10 +16,12 @@ const EducationComponent = (props: {
           GPA: string;
           graduationYear: string;
         }[]
+      | undefined
     >
   >;
   value:
-    | { degree: string; major: string; GPA: string; graduationYear: string }[];
+    | { degree: string; major: string; GPA: string; graduationYear: string }[]
+    | undefined;
 }) => {
   const [checked, setChecked] = useState(false);
   const [index, setIndex] = useState<number>(0);
@@ -29,11 +31,11 @@ const EducationComponent = (props: {
       props.removeObj(props.item);
     } else {
       props.createIndex(props.item);
-      setIndex(props.length);
+      props.length && setIndex(props.length);
     }
   };
   const setValGraduationYear = (val: any) => {
-    let items = [...props.value];
+    let items = props.value ? [...props.value] : [];
     let item = {
       ...items[index],
       graduationYear: val.value,
@@ -50,7 +52,7 @@ const EducationComponent = (props: {
             placeholder={'Major'}
             type={'text'}
             handleChange={(e) => {
-              let items = [...props.value];
+              let items = props.value ? [...props.value] : [];
               let item = {
                 ...items[index],
                 major: e.target.value,
@@ -75,7 +77,7 @@ const EducationComponent = (props: {
             placeholder={'GPA or %'}
             type={'number'}
             handleChange={(e) => {
-              let items = [...props.value];
+              let items = props.value ? [...props.value] : [];
               let item = {
                 ...items[index],
                 GPA: e.target.value,

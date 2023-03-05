@@ -13,6 +13,7 @@ import CheckBoxInput from './CheckBoxInput';
 import { IoMdAddCircle, IoMdTrash } from 'react-icons/io';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { degree } from '../constants/educatonData';
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
@@ -42,14 +43,7 @@ const Form = ({ jobId }: any) => {
       GPA: string;
       graduationYear: string;
     }[]
-  >([
-    {
-      degree: '',
-      major: '',
-      GPA: '',
-      graduationYear: '',
-    },
-  ]);
+  >();
   const [id, setId] = useState();
   const [certificate, setCertificate] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = React.useState<
@@ -74,7 +68,6 @@ const Form = ({ jobId }: any) => {
     'Content-Type': 'application/json',
   } as unknown as AxiosRequestHeaders;
   const submitForm = async () => {
-    educationInformation.shift();
     const formDetails = {
       data: {
         firstName: firstName,
@@ -398,14 +391,7 @@ const Form = ({ jobId }: any) => {
                         required={true}
                         title="Educational Degree"
                         name="educational degree"
-                        options={[
-                          'Ph.D.',
-                          `Master's degree`,
-                          `Bachelor's degree`,
-                          'Diploma',
-                          'High school',
-                          'below high school',
-                        ]}
+                        options={degree}
                         value={educationInformation}
                         setValue={setEducationInformation}
                       />

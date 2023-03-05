@@ -8,7 +8,8 @@ const CheckBoxInput = (props: {
   name: string;
   required: boolean;
   value:
-    | { degree: string; major: string; GPA: string; graduationYear: string }[];
+    | { degree: string; major: string; GPA: string; graduationYear: string }[]
+    | undefined;
   setValue: React.Dispatch<
     React.SetStateAction<
       | {
@@ -17,6 +18,7 @@ const CheckBoxInput = (props: {
           GPA: string;
           graduationYear: string;
         }[]
+      | undefined
     >
   >;
 }) => {
@@ -33,14 +35,18 @@ const CheckBoxInput = (props: {
   }));
 
   const createIndex = (degree: string) => {
-    props.setValue([
-      ...props.value,
-      { degree: degree, GPA: '', graduationYear: '', major: '' },
-    ]);
+    props.value
+      ? props.setValue([
+          ...props.value,
+          { degree: degree, GPA: '', graduationYear: '', major: '' },
+        ])
+      : props.setValue([
+          { degree: degree, GPA: '', graduationYear: '', major: '' },
+        ]);
   };
   const removeObj = (degree: string) => {
     props.setValue(
-      props.value.filter((item) => {
+      props.value?.filter((item) => {
         return item.degree !== degree;
       })
     );
@@ -56,7 +62,7 @@ const CheckBoxInput = (props: {
           value={props.value}
           key={index}
           item={item}
-          length={props.value.length}
+          length={props.value?.length}
           allYears={allYears}
           removeObj={removeObj}
           createIndex={createIndex}
