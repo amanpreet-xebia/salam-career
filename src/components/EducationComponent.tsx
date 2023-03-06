@@ -43,8 +43,21 @@ const EducationComponent = (props: {
     items[index] = item;
     props.setValue(items);
   };
-
   const EducationInformation = () => {
+    const handleGpa = (e: any) => {
+      const regex = /^(\d{0,1}[.]{0,1}\d{0,1})$/;
+      if (e.target.value === '' || regex.test(e.target.value)) {
+        console.log('hello');
+
+        let items = props.value ? [...props.value] : [];
+        let item = {
+          ...items[index],
+          GPA: e.target.value,
+        };
+        items[index] = item;
+        props.setValue(items);
+      }
+    };
     return (
       <div className="grid grid-cols-6 gap-6 my-5">
         <div className="col-span-6 sm:col-span-3">
@@ -74,17 +87,10 @@ const EducationComponent = (props: {
         </div>
         <div className="col-span-6 sm:col-span-3">
           <InputBox
+            value={props.value && props.value[index].GPA}
             placeholder={'GPA or %'}
-            type={'number'}
-            handleChange={(e) => {
-              let items = props.value ? [...props.value] : [];
-              let item = {
-                ...items[index],
-                GPA: e.target.value,
-              };
-              items[index] = item;
-              props.setValue(items);
-            }}
+            type={'text'}
+            handleChange={handleGpa}
           />
         </div>
       </div>
