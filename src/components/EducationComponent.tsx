@@ -45,10 +45,15 @@ const EducationComponent = (props: {
   };
   const EducationInformation = () => {
     const handleGpa = (e: any) => {
-      const regex = /^(\d{0,1}[.]{0,1}\d{0,1})$/;
-      if (e.target.value === '' || regex.test(e.target.value)) {
-        console.log('hello');
+      const regex = /^(\d{0,1}[.]{0,1}\d{0,2})$/;
 
+      if (
+        (e.target.value === '' || regex.test(e.target.value)) &&
+        (e.target.value === '100' ||
+          !(
+            !e.target.value.includes('.') && e.target.value.trim().length === 3
+          ))
+      ) {
         let items = props.value ? [...props.value] : [];
         let item = {
           ...items[index],
