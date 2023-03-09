@@ -14,7 +14,7 @@ import { IoMdAddCircle, IoMdTrash } from 'react-icons/io';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { degree } from '../constants/educatonData';
-import { noticePeriodOptions } from '../constants/dropdown';
+import { languages, noticePeriodOptions } from '../constants/dropdown';
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
@@ -24,6 +24,8 @@ const Form = ({ jobId }: any) => {
       },
     });
   };
+  const [isRelativePresent, setIsRelativePresent] = useState('');
+  const [isExEmployee, setIsExEmployee] = useState('');
   const [summary, setSummary] = useState('');
   const [type, setType] = useState('');
   const [location, setLocation] = useState('');
@@ -33,6 +35,7 @@ const Form = ({ jobId }: any) => {
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [language, setLanguage] = useState<{ value: String; label: String }>();
   const [nationality, setNationality] = useState({
     value: String,
     label: String,
@@ -49,7 +52,10 @@ const Form = ({ jobId }: any) => {
       graduationYear: string;
     }[]
   >();
-  const [noticePeriod, setNoticePeriod] = useState('');
+  const [noticePeriod, setNoticePeriod] = useState<{
+    value: String;
+    label: String;
+  }>();
   const [id, setId] = useState();
   const [certificate, setCertificate] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = React.useState<
@@ -69,6 +75,7 @@ const Form = ({ jobId }: any) => {
   const [category, setCategory] = useState('');
   const [jobInIqama, setJobInIqama] = useState('');
   const [isIqamaTransferable, setisIqamaTransferable] = useState('');
+  const [relativeName, setRelativeName] = useState('');
   const jobCode = params.jobId;
 
   const navigate = useNavigate();
@@ -97,9 +104,13 @@ const Form = ({ jobId }: any) => {
         jobTitle: position,
         jobCode: jobCode,
         job: id,
-        noticePeriod: noticePeriod,
+        noticePeriod: noticePeriod?.value,
         jobInIqama: jobInIqama,
         isIqamaTransferable: isIqamaTransferable,
+        language: language?.value,
+        isRelativePresent: isRelativePresent,
+        relative: relativeName,
+        isExEmployee: isExEmployee,
       },
     };
     axios
@@ -207,6 +218,9 @@ const Form = ({ jobId }: any) => {
   };
   const handleCountryChange = (country: any) => {
     setCountry(country);
+  };
+  const handleLanguageChange = (language: any) => {
+    setLanguage(language);
   };
   const handleNoticePeriodChange = (period: any) => {
     setNoticePeriod(period);
@@ -406,11 +420,12 @@ const Form = ({ jobId }: any) => {
                       />
                     </div>
                     {country?.value !== 'Saudi Arabia' && (
-                      <div>
+                      <div className="col-span-6 sm:col-span-3">
                         <RadioInput
-                          required={true}
-                          title="Type"
-                          name="gender"
+                          required={
+                            country?.value !== 'Saudi Arabia' ? true : false
+                          }
+                          name="type"
                           options={['Local', 'Overseas']}
                           onClick={(e: any) => {
                             setType(e.target.value);
@@ -422,7 +437,12 @@ const Form = ({ jobId }: any) => {
                       <>
                         <div className="col-span-6 sm:col-span-3">
                           <RadioInput
-                            required={true}
+                            required={
+                              country?.value !== 'Saudi Arabia' &&
+                              type === 'Local'
+                                ? true
+                                : false
+                            }
                             title="Is your iqama transferable?"
                             name="iqamaStatus"
                             options={['Yes', 'No']}
@@ -433,10 +453,16 @@ const Form = ({ jobId }: any) => {
                         </div>
                         <div className="col-span-6 sm:col-span-3">
                           <InputBox
+                            required={
+                              country?.value !== 'Saudi Arabia' &&
+                              type === 'Local'
+                                ? true
+                                : false
+                            }
                             placeholder={'Mention your job in iqama.'}
                             type={'text'}
                             handleChange={(e) => {
-                              setCity(e.target.value);
+                              setJobInIqama(e.target.value);
                             }}
                           />
                         </div>
@@ -637,6 +663,74 @@ const Form = ({ jobId }: any) => {
                         </div>
                       </>
                     )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="hidden sm:block" aria-hidden="true">
+            <div className="py-5">
+              <div className="border-t border-gray-200"></div>
+            </div>
+          </div>
+          {/* Additional Information */}
+          <div className="md:grid md:grid-cols-3 md:gap-6">
+            <div className="md:col-span-1">
+              <div className="px-4 sm:px-0">
+                <h3 className="text-lg pt-5 md:pt-0  font-medium leading-6 text-gray-900">
+                  Additional Information
+                </h3>
+              </div>
+            </div>
+            <div className="mt-5 md:col-span-2 md:mt-0">
+              <div className="shadow sm:rounded-md">
+                <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
+                  <div className="grid grid-cols-6 gap-6">
+                    <div className="col-span-6 sm:col-span-3">
+                      <Select
+                        options={languages}
+                        isSearchable
+                        onChange={handleLanguageChange}
+                        // value={country.value}
+                        required={true}
+                        placeholder="Language"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                      />
+                    </div>
+                    <div className="col-span-6 sm:col-span-6">
+                      <RadioInput
+                        required={true}
+                        name="isRelative"
+                        title="Do you have any relatives working with us."
+                        options={['Yes', 'No']}
+                        onClick={(e: any) => {
+                          setIsRelativePresent(e.target.value);
+                        }}
+                      />
+                    </div>
+                    {isRelativePresent === 'Yes' && (
+                      <div className="col-span-6 sm:col-span-3">
+                        <InputBox
+                          placeholder={'Please provide Relative name'}
+                          type={'text'}
+                          handleChange={(e) => {
+                            setRelativeName(e.target.value);
+                          }}
+                        />
+                      </div>
+                    )}
+                    <div className="col-span-6 sm:col-span-6">
+                      <RadioInput
+                        required={true}
+                        name="isExEmployee"
+                        title="Are you an Ex-Employee of Salam?"
+                        options={['Yes', 'No']}
+                        onClick={(e: any) => {
+                          setIsExEmployee(e.target.value);
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
