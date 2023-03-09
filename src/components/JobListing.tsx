@@ -92,6 +92,8 @@ const JobListing = () => {
                 jobCode={item.attributes.jobCode}
                 name={item.attributes.name}
                 longDescription={item.attributes.longDescription}
+                jobLevel={item.attributes.jobLevel}
+                location={item.attributes.location}
               />
             ))}
         </ul>
