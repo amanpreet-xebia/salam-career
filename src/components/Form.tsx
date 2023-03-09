@@ -35,7 +35,7 @@ const Form = ({ jobId }: any) => {
   const [allCountry, setAllCountry] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [language, setLanguage] = useState('');
+  const [language, setLanguage] = useState<{ value: String; label: String }>();
   const [nationality, setNationality] = useState({
     value: String,
     label: String,
@@ -52,7 +52,10 @@ const Form = ({ jobId }: any) => {
       graduationYear: string;
     }[]
   >();
-  const [noticePeriod, setNoticePeriod] = useState('');
+  const [noticePeriod, setNoticePeriod] = useState<{
+    value: String;
+    label: String;
+  }>();
   const [id, setId] = useState();
   const [certificate, setCertificate] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = React.useState<
@@ -101,10 +104,10 @@ const Form = ({ jobId }: any) => {
         jobTitle: position,
         jobCode: jobCode,
         job: id,
-        noticePeriod: noticePeriod,
+        noticePeriod: noticePeriod?.value,
         jobInIqama: jobInIqama,
         isIqamaTransferable: isIqamaTransferable,
-        language: language,
+        language: language?.value,
         isRelativePresent: isRelativePresent,
         relative: relativeName,
         isExEmployee: isExEmployee,
