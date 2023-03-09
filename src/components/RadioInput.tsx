@@ -1,7 +1,7 @@
 import React from 'react';
 
 const RadioInput = (props: {
-  title: string;
+  title?: string;
   options: string[];
   onClick: (e: any) => void;
   name: string;

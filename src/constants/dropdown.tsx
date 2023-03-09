@@ -4,3 +4,7 @@ export const noticePeriodOptions = [
   { value: '2 month', label: '2 month' },
   { value: '2+ month', label: '2+ month' },
 ];
+export const languages = [
+  { value: 'English', label: 'English' },
+  { value: 'Arabic', label: 'Arabic' },
+];
