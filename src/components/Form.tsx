@@ -14,6 +14,7 @@ import { IoMdAddCircle, IoMdTrash } from 'react-icons/io';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { degree } from '../constants/educatonData';
+import { noticePeriodOptions } from '../constants/dropdown';
 const Form = ({ jobId }: any) => {
   const showToast = (msg: string) => {
     toast.error(msg, {
@@ -23,6 +24,10 @@ const Form = ({ jobId }: any) => {
       },
     });
   };
+  const [summary, setSummary] = useState('');
+  const [type, setType] = useState('');
+  const [location, setLocation] = useState('');
+  const [level, setLevel] = useState('');
   const [count, setCount] = useState<number>(0);
   const [allNationality, setAllNationality] = useState([]);
   const [allCountry, setAllCountry] = useState([]);
@@ -34,7 +39,7 @@ const Form = ({ jobId }: any) => {
   });
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [country, setCountry] = useState({ value: String, label: String });
+  const [country, setCountry] = useState<{ value: String; label: String }>();
   const [city, setCity] = useState('');
   const [educationInformation, setEducationInformation] = useState<
     {
@@ -44,6 +49,7 @@ const Form = ({ jobId }: any) => {
       graduationYear: string;
     }[]
   >();
+  const [noticePeriod, setNoticePeriod] = useState('');
   const [id, setId] = useState();
   const [certificate, setCertificate] = useState('');
   const [professionalCertificate, setProfessionalCertificate] = React.useState<
@@ -61,6 +67,8 @@ const Form = ({ jobId }: any) => {
   const [longDescription, setLongDescription] = useState('');
   const [position, setPosition] = useState('');
   const [category, setCategory] = useState('');
+  const [jobInIqama, setJobInIqama] = useState('');
+  const [isIqamaTransferable, setisIqamaTransferable] = useState('');
   const jobCode = params.jobId;
 
   const navigate = useNavigate();
@@ -75,7 +83,7 @@ const Form = ({ jobId }: any) => {
         email: email,
         phone: phoneNumber,
         Gender: gender,
-        country: country.value,
+        country: country?.value,
         city: city,
         nationality: nationality.value,
         educationInformation: educationInformation,
@@ -89,6 +97,9 @@ const Form = ({ jobId }: any) => {
         jobTitle: position,
         jobCode: jobCode,
         job: id,
+        noticePeriod: noticePeriod,
+        jobInIqama: jobInIqama,
+        isIqamaTransferable: isIqamaTransferable,
       },
     };
     axios
@@ -197,7 +208,9 @@ const Form = ({ jobId }: any) => {
   const handleCountryChange = (country: any) => {
     setCountry(country);
   };
-
+  const handleNoticePeriodChange = (period: any) => {
+    setNoticePeriod(period);
+  };
   useEffect(() => {
     console.log('yo' + JSON.stringify(educationInformation));
 
@@ -210,6 +223,9 @@ const Form = ({ jobId }: any) => {
             setPosition(item.attributes.name);
             setLongDescription(item.attributes.longDescription);
             setCategory(item.attributes.category);
+            setLocation(item.attributes.location);
+            setLevel(item.attributes.jobLevel);
+            setSummary(item.attributes.description);
             setId(item.id);
             if (item.attributes.applicationCount === null) {
               setCount(0);
@@ -228,17 +244,42 @@ const Form = ({ jobId }: any) => {
   return (
     <div className="h-full min-h-screen">
       <div className=" flex mx-5 mt-20 md:mx-20  mb-0 justify-center">
-        <div className="max-w-screen-md lg:w-[70%] w-[100%]">
-          <div className="text-2xl mb-3 font-medium leading-6 text-gray-900">
+        <div className=" max-w-screen-md lg:w-[70%] w-[100%]">
+          <div className="flex flex-col text-2xl mb-3 font-medium leading-6 text-gray-900">
+            {'Job Title: '}
             {position}
-            <span className="inline-block rounded-full bg-green-100 px-4 py-2 mx-3 text-base font-medium text-green-800">
-              {category}
+            <div>
+              {'Job Category: '}
+              <span className="my-5 inline-block rounded-full bg-green-100 px-4 pt-2 mx-3 text-base font-medium text-green-800">
+                {category}
+              </span>
+            </div>
+          </div>
+          <div className="flex">
+            <h1 className="text-2xl font-medium">{'Job Summary: '}</h1>
+            <span className="ml-4 align-text-bottom my-auto">{summary}</span>
+          </div>
+          <div className="flex">
+            <h1 className="text-2xl font-medium">{'Job Level: '}</h1>
+            <span className="ml-4 align-text-bottom my-auto">{level}</span>
+          </div>
+          <div className="flex">
+            <h1 className="text-2xl font-medium">{'Job Location: '}</h1>
+            <span className="ml-4 align-text-bottom my-auto">{location}</span>
+          </div>
+          <div className="flex">
+            <h1 className="text-2xl font-medium">{'Job Code: '}</h1>
+            <span className="ml-4 align-text-bottom my-auto">{jobCode}</span>
+          </div>
+          <div className="flex">
+            <h1 className="text-2xl font-medium">{'Job Description: '}</h1>
+            <span className="ml-4 align-text-bottom my-auto">
+              <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
+                children={longDescription}
+              />
             </span>
           </div>
-          <ReactMarkdown
-            rehypePlugins={[rehypeRaw]}
-            children={longDescription}
-          />
         </div>
       </div>
       {/* Application form */}
@@ -352,6 +393,7 @@ const Form = ({ jobId }: any) => {
                         }}
                       />
                     </div>
+
                     <div className="col-span-6 sm:col-span-3">
                       <Select
                         options={allNationality}
@@ -363,6 +405,43 @@ const Form = ({ jobId }: any) => {
                         classNamePrefix="react-select"
                       />
                     </div>
+                    {country?.value !== 'Saudi Arabia' && (
+                      <div>
+                        <RadioInput
+                          required={true}
+                          title="Type"
+                          name="gender"
+                          options={['Local', 'Overseas']}
+                          onClick={(e: any) => {
+                            setType(e.target.value);
+                          }}
+                        />
+                      </div>
+                    )}
+                    {country?.value !== 'Saudi Arabia' && type === 'Local' && (
+                      <>
+                        <div className="col-span-6 sm:col-span-3">
+                          <RadioInput
+                            required={true}
+                            title="Is your iqama transferable?"
+                            name="iqamaStatus"
+                            options={['Yes', 'No']}
+                            onClick={(e: any) => {
+                              setisIqamaTransferable(e.target.value);
+                            }}
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <InputBox
+                            placeholder={'Mention your job in iqama.'}
+                            type={'text'}
+                            handleChange={(e) => {
+                              setCity(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -543,6 +622,17 @@ const Form = ({ jobId }: any) => {
                             handleChange={(e) => {
                               setCurrentJobTitle(e.target.value);
                             }}
+                          />
+                        </div>
+                        <div className="col-span-6 sm:col-span-3">
+                          <Select
+                            options={noticePeriodOptions}
+                            isSearchable
+                            onChange={handleNoticePeriodChange}
+                            // value={country.value}
+                            placeholder="Notice Period"
+                            className="react-select-container"
+                            classNamePrefix="react-select"
                           />
                         </div>
                       </>

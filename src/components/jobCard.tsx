@@ -8,22 +8,42 @@ const jobCard = (props: {
   jobCode: string;
   category: string;
   longDescription: any;
+  jobLevel: string;
+  location: string;
 }) => {
   return (
     <li className=" col-span-1 divide-y divide-gray-200 rounded-lg bg-white">
       <div className="flex w-full items-center justify-between space-x-6 p-6">
         <div className="flex-1 truncate">
-          <div className="flex items-center space-x-3">
-            <h3 className="truncate text-sm font-medium text-gray-900">
+          <div className="items-center text-sm space-x-3">
+            <h3 className="truncate py-2 text-sm font-medium text-gray-900">
+              {'Job Title: '}
               {props.name}
             </h3>
-            <span className="inline-block flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+
+            {'Job Category: '}
+            <span className="flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
               {props.category}
             </span>
           </div>
-          <p className="mt-1 truncate text-sm text-gray-500">
-            {props.description}
-          </p>
+          <div className="text-sm flex py-2">
+            <p>{'Job Summary: '}</p>
+            <p className="ml-1 truncate text-sm text-gray-500">
+              {props.description}
+            </p>
+          </div>
+          <div className="text-sm flex pb-2">
+            <p>{'Job Level: '}</p>
+            <p className="ml-1 truncate text-sm text-gray-500">
+              {props.jobLevel}
+            </p>
+          </div>
+          <div className="text-sm flex pb-2">
+            <p>{'Job Location: '}</p>
+            <p className="ml-1 truncate text-sm text-gray-500">
+              {props.location}
+            </p>
+          </div>
         </div>
       </div>
       <div>
