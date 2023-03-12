@@ -43,10 +43,13 @@ const JobListing = () => {
 
       <Select
         options={[
-          { value: 'Riyadh', label: 'Riyadh' },
-          { value: 'Western', label: 'Western' },
-          { value: 'Eastern', label: 'Eastern' },
-          { value: 'All', label: 'All' },
+          { value: "Eastern", label: "Eastern" },
+          { value: "Central", label: "Central" },
+          { value: "Northern", label: "Northern" },
+          { value: "Northwest", label: "Northwest" },
+          { value: "Midwest", label: "Midwest" },
+          { value: "Southwest", label: "Southwest" },
+          { value: "All", label: "All" },
         ]}
         isSearchable
         onChange={handleLocationChange}
@@ -56,14 +59,14 @@ const JobListing = () => {
         classNamePrefix="react-select"
       />
       <div
-        className={'mx-auto max-w-7xl px-2 lg:px-8 bg-gray-100 py-8 rounded-xl'}
+        className={"mx-auto max-w-7xl px-2 lg:px-8 bg-gray-100 py-8 rounded-xl"}
       >
         <ul
           role="list"
           className="relative m-0 min-h-[30px] list-none grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {jobs.filter((item: any) => {
-            if (location.value.toString() === 'All') {
+            if (location.value.toString() === "All") {
               return item;
             } else if (item.attributes.location === location.value) {
               return item;
@@ -77,7 +80,7 @@ const JobListing = () => {
           )}
           {jobs
             .filter((item: any) => {
-              if (location.value.toString() === 'All') {
+              if (location.value.toString() === "All") {
                 return item;
               } else if (item.attributes.location === location.value) {
                 return item;
