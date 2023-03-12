@@ -87,11 +87,11 @@ const JobListing = () => {
               <JobCard
                 key={item.id}
                 id={item.id}
-                category={item.attributes.category}
-                description={item.attributes.description}
+                category={item.attributes.department}
+                description={item.attributes.jobSummary}
                 jobCode={item.attributes.jobCode}
-                name={item.attributes.name}
-                longDescription={item.attributes.longDescription}
+                name={item.attributes.jobTitle}
+                longDescription={item.attributes.jobDescription}
                 jobLevel={item.attributes.jobLevel}
                 location={item.attributes.location}
               />

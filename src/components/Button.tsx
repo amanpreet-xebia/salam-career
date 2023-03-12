@@ -13,7 +13,7 @@ const Button = (props: buttonProps) => {
       type="submit"
       disabled={props.disabled}
       onClick={props.onClick}
-      className={` block ${props.styles} min-w-max  justify-center  ${
+      className={` block  min-w-max  justify-center  ${
         props.buttonType === 'primary' && 'bg-bright-green text-white'
       } ${
         props.buttonType === 'dark' &&
@@ -24,8 +24,7 @@ const Button = (props: buttonProps) => {
       } ${
         props.buttonType === 'transparent' &&
         'bg-transparent text-bright-green border-bright-green'
-      }  text-sm rounded-lg  
-    } p-2 px-6 font-inter border-[1px] `}
+      }  rounded-lg p-2 px-6 font-inter border-[1px] ${props.styles}`}
     >
       {props.icon ? (
         <div className="flex gap-2">

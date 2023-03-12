@@ -21,7 +21,7 @@ const jobCard = (props: {
               {props.name}
             </h3>
 
-            {'Job Category: '}
+            {'Job Department: '}
             <span className="flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
               {props.category}
             </span>
