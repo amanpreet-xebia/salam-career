@@ -7,6 +7,7 @@ import JobCard from './jobCard';
 
 const JobListing = () => {
   const [jobs, setJobs] = useState([]);
+  const [allLocations, setAllLocations] = useState();
   const showToast = (msg: string) => {
     toast.error(msg, {
       data: {
@@ -14,6 +15,19 @@ const JobListing = () => {
         position: toast.POSITION.TOP_CENTER,
       },
     });
+  };
+  const fetchLocations = async () => {
+    axios
+      .get(`${process.env.REACT_APP_STRAPI_URL}api/locations`)
+      .then((res) => {
+        const locations = res.data.data[0].attributes.Location.map(
+          (location: String) => ({ value: location, label: location })
+        );
+        setAllLocations(locations);
+      })
+      .catch(() => {
+        showToast('Something Went Wrong');
+      });
   };
   const [location, setLocation] = useState({ value: 'All', label: 'All' });
   const handleLocationChange = (location: any) => {
@@ -32,6 +46,7 @@ const JobListing = () => {
 
   useEffect(() => {
     fetchJobs();
+    fetchLocations();
   }, []);
   console.log(location.value);
 
@@ -42,15 +57,7 @@ const JobListing = () => {
       </div>
 
       <Select
-        options={[
-          { value: "Eastern", label: "Eastern" },
-          { value: "Central", label: "Central" },
-          { value: "Northern", label: "Northern" },
-          { value: "Northwest", label: "Northwest" },
-          { value: "Midwest", label: "Midwest" },
-          { value: "Southwest", label: "Southwest" },
-          { value: "All", label: "All" },
-        ]}
+        options={allLocations}
         isSearchable
         onChange={handleLocationChange}
         // value={country.value}
@@ -59,14 +66,14 @@ const JobListing = () => {
         classNamePrefix="react-select"
       />
       <div
-        className={"mx-auto max-w-7xl px-2 lg:px-8 bg-gray-100 py-8 rounded-xl"}
+        className={'mx-auto max-w-7xl px-2 lg:px-8 bg-gray-100 py-8 rounded-xl'}
       >
         <ul
           role="list"
           className="relative m-0 min-h-[30px] list-none grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
           {jobs.filter((item: any) => {
-            if (location.value.toString() === "All") {
+            if (location.value.toString() === 'All') {
               return item;
             } else if (item.attributes.location === location.value) {
               return item;
@@ -80,7 +87,7 @@ const JobListing = () => {
           )}
           {jobs
             .filter((item: any) => {
-              if (location.value.toString() === "All") {
+              if (location.value.toString() === 'All') {
                 return item;
               } else if (item.attributes.location === location.value) {
                 return item;
