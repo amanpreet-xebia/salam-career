@@ -16,33 +16,33 @@ const jobCard = (props: {
       <div className="flex w-full items-center justify-between space-x-6 p-6">
         <div className="flex-1 truncate">
           <div className="items-center text-sm space-x-3">
-            <h3 className="truncate py-2 text-sm font-medium text-gray-900">
+            <h3 className="truncate flex py-2 text-sm font-medium text-gray-900">
               {'Job Title: '}
-              {props.name}
+              <p className="ml-1 truncate text-sm text-gray-500">
+                {props.name}
+              </p>
             </h3>
+          </div>
 
-            {'Job Department: '}
-            <span className="flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
-              {props.category}
-            </span>
-          </div>
-          <div className="text-sm flex py-2">
-            <p>{'Job Summary: '}</p>
-            <p className="ml-1 truncate text-sm text-gray-500">
-              {props.description}
-            </p>
-          </div>
           <div className="text-sm flex pb-2">
             <p>{'Job Level: '}</p>
             <p className="ml-1 truncate text-sm text-gray-500">
               {props.jobLevel}
             </p>
           </div>
+
           <div className="text-sm flex pb-2">
-            <p>{'Job Location: '}</p>
+            {'Job Location: '}
             <p className="ml-1 truncate text-sm text-gray-500">
+              {' '}
               {props.location}
             </p>
+          </div>
+          <div className="text-sm flex pb-2">
+            {'Job Department: '}
+            <span className="flex-shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+              {props.category}
+            </span>
           </div>
         </div>
       </div>
